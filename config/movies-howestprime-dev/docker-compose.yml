@@ -1,10 +1,10 @@
 services:
   # Database container: PostgreSQL
   movies-db:
-    image: postgres:latest
+    image: postgres:16-alpine
     container_name: movies-db.howestprime.dev
     env_file:
-      - .env
+      - .movies-db.howestprime.dev.env
     ports:
       - "40021:5000"
     volumes:
@@ -14,7 +14,7 @@ services:
 
   # Messagebroker container: LavinMQ
   messagebroker:
-    image: cloudamqp/lavinmq:latest
+    image: cloudamqp/lavinmq:1.2
     container_name: messagebroker.howestprime.dev
     ports:
       - "40000:5672"   # AMQP port
