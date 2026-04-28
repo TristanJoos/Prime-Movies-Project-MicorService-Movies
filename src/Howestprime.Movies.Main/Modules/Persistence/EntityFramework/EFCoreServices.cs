@@ -5,6 +5,8 @@ using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Configuratio
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Configuration.Vendors;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Interceptors;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Seeders;
+using Howestprime.Movies.Domain.Movies;
+using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Repositories;
 
 namespace Howestprime.Movies.Main.Modules.Persistence.EntityFramework;
 
@@ -37,9 +39,13 @@ public static class EFCoreServices
                 DomainDbContext context =
                     sp.GetRequiredService<DomainDbContext>();
 
-                EntityFrameworkUoW uow = new (
+                EntityFrameworkUoW uow = new(
                     context,
                     logger
+                );
+
+                uow.RegisterRepository<IMovieRepository>(
+                    sp.GetRequiredService<IMovieRepository>()
                 );
 
                 return uow;
@@ -57,7 +63,7 @@ public static class EFCoreServices
         this IServiceCollection services
     )
     {
-        return services;
+        return services.AddScoped<IMovieRepository, MovieRepository>();
     }
 
     private static IServiceCollection AddQueries(
@@ -66,7 +72,7 @@ public static class EFCoreServices
     {
         return services;
     }
-    
+
     public static WebApplication ApplyMigrations(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
@@ -81,7 +87,7 @@ public static class EFCoreServices
     {
         using var scope = app.Services.CreateScope();
         DomainDbSeeder seeder = scope.ServiceProvider.GetRequiredService<DomainDbSeeder>();
-        
+
         await seeder.Seed();
 
         return app;

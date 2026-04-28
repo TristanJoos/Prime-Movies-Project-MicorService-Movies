@@ -13,11 +13,18 @@ public static class ModuleExtensions
         IConfiguration configuration
     )
     {
-        return services;
+        return services
+            .AddApplicationModule(configuration)
+            //.AddAuthorizationModule(configuration)
+            .AddDomainEventModule(configuration)
+            .AddEFCoreModule(configuration)
+            .AddMessagingModule(configuration)
+            .AddWebApiModule(configuration);
     }
 
     public static async Task<WebApplication> UseModules(this WebApplication app)
     {
-        return app;
+        await app.UseEFCoreModule();
+        return app.UseWebApiModule();
     }
 }

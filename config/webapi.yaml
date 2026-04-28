@@ -3,8 +3,8 @@ info:
   title: Howestprime.Movies API
   description: API documentation for Howestprime.Movies application.
   contact:
-    name: Student name
-    email: student@mail.be
+    name: Tristan Joos
+    email: tristan.joos@student.howest.be
   version: v1
 servers:
   - url: http://localhost:8000/
