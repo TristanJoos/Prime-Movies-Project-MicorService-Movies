@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Howestprime.Movies.Infrastructure.WebApi;
@@ -9,7 +10,20 @@ public static class Routes
     {
         RouteGroupBuilder webApi = app.MapGroup("/api");
 
-
+        app.MapMovieRoutes();
         return app;
+    }
+
+    public static RouteGroupBuilder MapMovieRoutes(this IEndpointRouteBuilder app)
+    {
+        RouteGroupBuilder movies = app.MapGroup("/movies-catalog")
+            .WithTags("Movie Catalog")
+            .WithDescription("All endpoints related to managing the movie catalog.");
+
+         movies.MapPost("/", RegisterMovieControler.Invoke)
+            .WithName("RegisterMovie")
+            .WithDescription(" Register a new movie in the catalog.");
+
+        return movies;
     }
 }
