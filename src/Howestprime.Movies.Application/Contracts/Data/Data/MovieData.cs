@@ -10,4 +10,9 @@ public record MovieData(
     int ReleaseYear,
     int Duration,
     string Description
-);
+)
+{
+    public MovieData() : this(Guid.Empty, string.Empty, string.Empty, new List<GenreData>(), new List<ActorData>(), 0, 0, 0, string.Empty)
+    {
+    }
+}

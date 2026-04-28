@@ -1,8 +1,5 @@
 using Howestprime.Movies.Application.Contracts.Data;
 using Howestprime.Movies.Application.Contracts.Ports;
-using Howestprime.Movies.Domain.Movies;
-using Howestprime.Movies.Domain.Movies.ValueObjects;
-using Howestprime.Movies.Domain.Shared;
 
 namespace Howestprime.Movies.Application.Movies;
 
@@ -18,8 +15,14 @@ public sealed class SearchMovieCatalog(
 
     public async Task<IEnumerable<MovieData>> Execute(SearchMovieCatalogInput input)
     {
-        IEnumerable<MovieData> movies = await searchMovieCatalogQuery.Fetch(input.Title, input.Genres);
+        IReadOnlyList<GenreData> normalizedGenres = [
+            .. input.Genres.Select(genre => new GenreData(genre))
+        ];
 
-        return movies;
+        return await searchMovieCatalogQuery.Fetch(
+            MovieDataFilters.ByTitleAndGenres(input.Title, normalizedGenres)
+        );
     }
+
+
 }

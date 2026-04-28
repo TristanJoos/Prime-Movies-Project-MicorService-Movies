@@ -11,7 +11,7 @@ namespace Howestprime.Movies.Infrastructure.WebApi.Controllers.Movies;
 
 public record SearchMovieCatalogRequest(
     [FromQuery] string Title,
-    [FromQuery] IEnumerable<string> Genres,
+    [FromQuery] string Genres,
     [FromServices] IUseCase<SearchMovieCatalogInput, IEnumerable<MovieData>> UseCase
 );
 
@@ -21,7 +21,8 @@ public static class SearchMovieCatalogController
         [AsParameters] SearchMovieCatalogRequest request
     )
     {
-        SearchMovieCatalogInput input = new(request.Title, request.Genres);
+        IEnumerable<string> genres = request.Genres.Split(',').Select(g => g.Trim()).Where(g => !string.IsNullOrEmpty(g));
+        SearchMovieCatalogInput input = new(request.Title, genres);
 
         IEnumerable<MovieData> moviesData =
             await request.UseCase.Execute(input);
