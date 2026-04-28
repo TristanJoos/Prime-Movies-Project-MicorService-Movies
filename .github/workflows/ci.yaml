@@ -49,7 +49,7 @@ jobs:
         /p:CoverletOutputFormat=opencover \
         /p:Threshold=97 \
         /p:ThresholdType=line \
-        '/p:Include=[Howestprime.Movies.Application]*,[Howestprime.Movies.Domain]*'
+        /p:Include=\"[Howestprime.Movies.Application]*,[Howestprime.Movies.Domain]*\"
 
     - name: Upload Coverage Artifact
       uses: actions/upload-artifact@v4
