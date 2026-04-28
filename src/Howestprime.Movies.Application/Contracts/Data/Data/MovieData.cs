@@ -1,7 +1,7 @@
 namespace Howestprime.Movies.Application.Contracts.Data;
 
 public record MovieData(
-    Guid id,
+    Guid Id,
     string PosterUrl,
     string Title,
     IEnumerable<GenreData> Genres,
