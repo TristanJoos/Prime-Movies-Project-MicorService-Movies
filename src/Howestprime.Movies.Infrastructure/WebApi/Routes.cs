@@ -11,19 +11,19 @@ public static class Routes
     {
         RouteGroupBuilder webApi = app.MapGroup("/api");
 
-        app.MapMovieRoutes();
-        return app;
+        webApi.MapMovieRoutes();
+        return webApi;
     }
 
     public static RouteGroupBuilder MapMovieRoutes(this IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder movies = app.MapGroup("/movies-catalog")
+        RouteGroupBuilder movies = app.MapGroup("/movie-catalog")
             .WithTags("Movie Catalog")
             .WithDescription("All endpoints related to managing the movie catalog.");
 
-         movies.MapPost("/", RegisterMovieController.Invoke)
-            .WithName("RegisterMovie")
-            .WithDescription(" Register a new movie in the catalog.");
+        movies.MapPost("/", RegisterMovieController.Invoke)
+           .WithName("RegisterMovie")
+           .WithDescription(" Register a new movie in the catalog.");
 
         return movies;
     }

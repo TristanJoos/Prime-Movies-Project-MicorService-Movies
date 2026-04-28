@@ -7,6 +7,17 @@ public sealed class MovieConfiguration : IEntityTypeConfiguration<Movie>
 {
      public void Configure(EntityTypeBuilder<Movie> builder)
     {
+        builder.ToTable("Movies");
+
+        builder.HasKey(movie => movie.Id);
+        builder.Property(movie => movie.Id).ValueGeneratedNever();
+
+        builder.Property(movie => movie.Title).IsRequired();
+        builder.Property(movie => movie.Description).IsRequired();
+        builder.Property(movie => movie.ReleaseYear).IsRequired();
+        builder.Property(movie => movie.Duration).IsRequired();
+        builder.Property(movie => movie.AgeRating).IsRequired();
+        builder.Property(movie => movie.PosterUrl).IsRequired();
 
         builder.OwnsMany(m => m.Actors, actorBuilder =>
         {

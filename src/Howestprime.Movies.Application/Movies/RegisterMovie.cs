@@ -9,9 +9,9 @@ public sealed record RegisterMovieInput(
     string Title,
     string Description,
     int Duration,
-    string Genres,
+    IEnumerable<string> Genres,
     int ReleaseYear,
-    string Actors,
+    IEnumerable<string> Actors,
     int AgeRating,
     string PosterUrl
 );
@@ -29,8 +29,8 @@ public sealed class RegisterMovie(
                 input.Description,
                 ReleaseYear.Create(input.ReleaseYear),
                 Duration.Create(input.Duration),
-                input.Genres.Split(',').Select(g => Genres.Create(g.Trim())),
-                input.Actors.Split(',').Select(a => Actors.Create(a.Trim())),
+                input.Genres.Select(Genres.Create),
+                input.Actors.Select(Actors.Create),
                 AgeRating.Create(input.AgeRating),
                 PosterUrl.Create(input.PosterUrl)
             );

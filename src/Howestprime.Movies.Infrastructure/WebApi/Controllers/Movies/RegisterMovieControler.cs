@@ -36,12 +36,12 @@ public static class RegisterMovieController
 }
 
 public record RegisterMovieBody(
-    [Required, MinLength(4)] string Title,
+    [Required] string Title,
     [Required] string Description,
     [Required] int Duration,
-    [Required] string Genres,
+    [Required] IEnumerable<string> Genres,
     [Required] int ReleaseYear,
-    [Required] string Actors,
+    [Required] IEnumerable<string> Actors,
     [Required] int AgeRating,
     [Required] string PosterUrl
 );
