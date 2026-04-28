@@ -14,22 +14,6 @@ public record RegisterMovieRequest(
 
 public static class RegisterMovieController
 {
-    /*input 
-    {
-  "title": "string",
-  "description": "string",
-  "releaseYear": 0,
-  "duration": 0,
-  "genres": [
-    "string"
-  ],
-  "actors": [
-    "string"
-  ],
-  "ageRating": 0,
-  "posterUrl": "string"
-}
-*/
     public static async Task<Results<Created, BadRequest>> Invoke(
         [AsParameters] RegisterMovieRequest request
     )

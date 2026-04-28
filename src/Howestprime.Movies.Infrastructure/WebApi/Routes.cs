@@ -1,3 +1,4 @@
+using Howestprime.Movies.Infrastructure.WebApi.Controllers.Movies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -20,7 +21,7 @@ public static class Routes
             .WithTags("Movie Catalog")
             .WithDescription("All endpoints related to managing the movie catalog.");
 
-         movies.MapPost("/", RegisterMovieControler.Invoke)
+         movies.MapPost("/", RegisterMovieController.Invoke)
             .WithName("RegisterMovie")
             .WithDescription(" Register a new movie in the catalog.");
 
