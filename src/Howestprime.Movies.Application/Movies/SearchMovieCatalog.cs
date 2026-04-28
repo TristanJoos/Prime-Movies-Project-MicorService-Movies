@@ -1,3 +1,4 @@
+using Howestprime.Movies.Application.Contracts.Data;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Movies;
 using Howestprime.Movies.Domain.Movies.ValueObjects;
@@ -12,12 +13,12 @@ public sealed record SearchMovieCatalogInput(
 
 public sealed class SearchMovieCatalog(
     ISearchMovieCatalogQuery searchMovieCatalogQuery
-) : IUseCase<SearchMovieCatalogInput, IEnumerable<Movie>>
+) : IUseCase<SearchMovieCatalogInput, IEnumerable<MovieData>>
 {
 
-    public async Task<IEnumerable<Movie>> Execute(SearchMovieCatalogInput input)
+    public async Task<IEnumerable<MovieData>> Execute(SearchMovieCatalogInput input)
     {
-        IEnumerable<Movie> movies = await searchMovieCatalogQuery.Fetch(input.Title, input.Genres);
+        IEnumerable<MovieData> movies = await searchMovieCatalogQuery.Fetch(input.Title, input.Genres);
 
         return movies;
     }
