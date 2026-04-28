@@ -46,5 +46,19 @@ public sealed class ValueObjectTests
         Assert.False(equals);
     }
 
+    [Fact]
+    public void CopyConstructor_WithRecord_ShouldClone()
+    {
+        // Arrange
+        SampleValueObject original = new(5, "value");
+
+        // Act
+        SampleValueObject clone = original with { };
+
+        // Assert
+        Assert.Equal(original, clone);
+        Assert.NotSame(original, clone);
+    }
+
     public sealed record SampleValueObject(int Number, string Text) : ValueObject;
 }

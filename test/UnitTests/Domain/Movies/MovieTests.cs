@@ -36,7 +36,12 @@ public sealed class MovieTests
             movie.DomainEvents,
             e => e is MovieRegistered created &&
                  created.MovieId.Equals(movie.Id) &&
-                 created.Title == title
+                 created.Title == title &&
+                 created.Description == description &&
+                 created.ReleaseYear == releaseYear &&
+                 created.Duration == duration &&
+                 created.AgeRating == AgeRating.Create(ageRating).ToString() &&
+                 created.PosterUrl == posterUrl
         );
     }
 
@@ -63,6 +68,29 @@ public sealed class MovieTests
         ));
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public void Create_WithEmptyDescription_ShouldThrowArgumentException(string? invalidDescription)
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => Movie.Create(
+            "Valid Title",
+            invalidDescription!,
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/poster.jpg")
+        ));
+    }
+
     [Fact]
     public void Create_WithEmptyGenres_ShouldThrowInvalidEntityStateException()
     {
@@ -78,6 +106,26 @@ public sealed class MovieTests
             Duration.Create(120),
             emptyGenres,
             actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/poster.jpg")
+        ));
+    }
+
+    [Fact]
+    public void Create_WithEmptyActors_ShouldThrowInvalidEntityStateException()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var emptyActors = new List<Actors>();
+
+        // Act & Assert
+        Assert.Throws<InvalidEntityStateException>(() => Movie.Create(
+            "Valid Title",
+            "Valid Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            emptyActors,
             AgeRating.Create(13),
             PosterUrl.Create("https://example.com/poster.jpg")
         ));
@@ -139,6 +187,37 @@ public sealed class MovieTests
 
         // Assert
         Assert.Equal(newPosterUrl, movie.PosterUrl);
+    }
+
+    [Fact]
+    public void UpdatePoster_WithNullUrl_ShouldThrowArgumentNullException()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Valid Title",
+            "Valid Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/old-poster.jpg")
+        );
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => movie.UpdatePoster(null!));
+    }
+
+    [Fact]
+    public void ParameterlessConstructor_ShouldInstantiate()
+    {
+        // Act
+        var movie = Activator.CreateInstance(typeof(Movie), nonPublic: true);
+
+        // Assert
+        Assert.NotNull(movie);
     }
 }
 
