@@ -24,7 +24,7 @@ jobs:
       run: dotnet restore
 
     - name: Execute Tests
-      run: dotnet test --no-restore --configuration Release --verbosity normal
+      run: dotnet test test/UnitTests/UnitTests.csproj --no-restore --configuration Release --verbosity normal
 
   coverage:
     name: Code Coverage
@@ -44,7 +44,7 @@ jobs:
 
     - name: Generate Coverage Report
       run: |
-        dotnet test --configuration Release \
+        dotnet test test/UnitTests/UnitTests.csproj --configuration Release \
         /p:CollectCoverage=true \
         /p:CoverletOutputFormat=opencover \
         /p:Threshold=97 \
