@@ -1,0 +1,58 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  unit-tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Execute Tests
+      run: dotnet test test/UnitTests/UnitTests.csproj --no-restore --configuration Release --verbosity normal
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Generate Coverage Report
+      run: |
+        dotnet test test/UnitTests/UnitTests.csproj --configuration Release \
+        /p:CollectCoverage=true \
+        /p:CoverletOutputFormat=opencover \
+        /p:Threshold=97 \
+        /p:ThresholdType=line \
+        /p:Include=\"[Howestprime.Movies.Application]*,[Howestprime.Movies.Domain]*\"
+
+    - name: Upload Coverage Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: "**/coverage.opencover.xml"
