@@ -6,14 +6,14 @@ public readonly record struct MovieEventId(Guid Value) : IEntityId;
 
 public sealed class MovieEvent : AggregateRoot<MovieEventId>
 {
-    public Guid MovieId { get; private set; }
-    public Guid RoomId { get; private set; }
+    public MovieId MovieId { get; private set; }
+    public RoomId RoomId { get; private set; }
     public DateTime Showtime { get; private set; }
     public int Capacity { get; private set; }
 
     public static MovieEvent Create(
-        Guid MovieId,
-        Guid RoomId,
+        MovieId MovieId,
+        RoomId RoomId,
         DateTime Showtime,
         int Capacity
     )
@@ -38,8 +38,8 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
 
     private MovieEvent(
         MovieEventId id,
-        Guid MovieId,
-        Guid RoomId,
+        MovieId MovieId,
+        RoomId RoomId,
         DateTime Showtime,
         int Capacity
     ) : base(id)
@@ -66,5 +66,12 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
         MovieEventAsserts.EnsureShowtimeIsAt15hOr19h(Showtime);
         MovieEventAsserts.EnsureShowtimeIsInTheFuture(Showtime);
 
+    }
+
+    public void UpdateMovie(MovieId newMovieId)
+    {
+        Asserts.EnsureNotEmpty(newMovieId);
+        MovieId = newMovieId;
+        ValidateState();
     }
 }
