@@ -7,6 +7,7 @@ using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Interceptors
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Seeders;
 using Howestprime.Movies.Domain.Movies;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Repositories;
+using Simplifyme.Taskly.Infrastructure.Persistence.EntityFramework.Queries;
 
 namespace Howestprime.Movies.Main.Modules.Persistence.EntityFramework;
 
@@ -70,7 +71,8 @@ public static class EFCoreServices
         this IServiceCollection services
     )
     {
-        return services;
+        return services
+                .AddScoped<ISearchMovieCatalogQuery, SearchMovieCatalogQuery>();
     }
 
     public static WebApplication ApplyMigrations(this WebApplication app)
