@@ -24,29 +24,29 @@ public sealed class ScheduleMovieEvent(
         MovieId movieId = new(input.MovieId);
         RoomId roomId = new(input.RoomId);
 
-        var roomOptional = await uow.Repo<IRoomRepository>().ById(roomId); 
+        var roomOptional = await uow.Repo<IRoomRepository>().ById(roomId);
 
-        Room? room = roomOptional.Value;
+        Room? room = roomOptional.HasValue ? roomOptional.Value : null;
         if (!await uow.Repo<IMovieRepository>().Exists(movieId))
         {
             throw new InvalidOperationException("Movie not found");
         }
-            
-         if (room == null)
+
+        if (room == null)
         {
             throw new InvalidOperationException("Room not found");
         }
 
         IMovieEventRepository repo = uow.Repo<IMovieEventRepository>();
-        MovieEvent? existingEvent = await repo.ByShowtimeAndRoomId(input.Showtime, input.RoomId );
+        MovieEvent? existingEvent = await repo.ByShowtimeAndRoomId(input.Showtime, input.RoomId);
         if (existingEvent != null)
         {
             existingEvent.UpdateMovie((movieId));
-            await uow.Do(); 
+            await uow.Do();
             return existingEvent.Id.Value;
         }
 
-        var movieEvent = MovieEvent.Create(movieId, roomId, input.Showtime ,room.Capacity);
+        var movieEvent = MovieEvent.Create(movieId, roomId, input.Showtime, room.Capacity);
         await uow.Save<IMovieEventRepository>(movieEvent);
         await uow.Do();
 
