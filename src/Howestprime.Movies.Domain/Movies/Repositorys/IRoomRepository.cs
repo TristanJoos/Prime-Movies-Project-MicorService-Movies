@@ -4,5 +4,4 @@ using Howestprime.Movies.Domain.Shared;
 
 public interface IRoomRepository : IRepository<Room, RoomId>
 {
-    
 }

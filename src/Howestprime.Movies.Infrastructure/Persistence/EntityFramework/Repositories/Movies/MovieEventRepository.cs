@@ -9,9 +9,10 @@ public sealed class MovieEventRepository (
     DomainDbContext context
 ) : EfCoreGenericRepository<MovieEvent, MovieEventId>(context), IMovieEventRepository
 {
-    public async Task<MovieEvent?> ByShowtimeAndRoomId(DateTime showtime, RoomId roomId)
+    public async Task<MovieEvent?> ByShowtimeAndRoomId(DateTime showtime, Guid roomId)
     {
+        RoomId roomIdValue = new(roomId);
         return await _context.Set<MovieEvent>()
-            .FirstOrDefaultAsync(e => e.Showtime == showtime && e.RoomId == roomId);
+            .FirstOrDefaultAsync(e => e.Showtime == showtime && e.RoomId == roomIdValue);
     }
 }

@@ -14,10 +14,10 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
     public static MovieEvent Create(
         MovieId MovieId,
         RoomId RoomId,
-        DateTime Showtime,
-        int Capacity
+        DateTime Showtime
     )
     {
+        int Capacity =  50; // Default capacity, can be adjusted based on room or other factors
         Asserts.EnsureNotEmpty(MovieId);
         Asserts.EnsureNotEmpty(RoomId);
         Asserts.EnsureGreaterThan(Capacity, 0);

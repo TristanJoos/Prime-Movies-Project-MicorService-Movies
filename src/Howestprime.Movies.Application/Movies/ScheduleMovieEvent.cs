@@ -6,10 +6,9 @@ using Howestprime.Movies.Domain.Movies.Repositorys;
 namespace Howestprime.Movies.Application.Movies;
 
 public sealed record ScheduleMovieEventInput(
-    MovieId MovieId,
-    RoomId RoomId,
-    DateTime Showtime,
-    int Capacity
+    Guid MovieId,
+    Guid RoomId,
+    DateTime Showtime
 );
 
 
@@ -21,22 +20,24 @@ public sealed class ScheduleMovieEvent(
 
     public async Task<Guid> Execute(ScheduleMovieEventInput input)
     {
-        if (!await uow.Repo<IMovieRepository>().Exists(input.MovieId))
+
+        MovieId movieId = new(input.MovieId);
+        RoomId roomId = new(input.RoomId);
+        if (!await uow.Repo<IMovieRepository>().Exists(movieId))
         {
             throw new InvalidOperationException("Movie not found");
         }
         
         IMovieEventRepository repo = uow.Repo<IMovieEventRepository>();
         MovieEvent? existingEvent = await repo.ByShowtimeAndRoomId(input.Showtime, input.RoomId);
-
         if (existingEvent != null)
         {
-            existingEvent.UpdateMovie(input.MovieId);
+            existingEvent.UpdateMovie((movieId));
             await uow.Do(); 
             return existingEvent.Id.Value;
         }
 
-        var movieEvent = MovieEvent.Create(input.MovieId, input.RoomId, input.Showtime, input.Capacity);
+        var movieEvent = MovieEvent.Create(movieId, roomId, input.Showtime);
         await uow.Save<IMovieEventRepository>(movieEvent);
         await uow.Do();
 
