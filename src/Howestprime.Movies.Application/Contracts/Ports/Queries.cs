@@ -9,4 +9,3 @@ public interface ISearchMovieCatalogQuery
         Expression<Func<MovieData, bool>> filter
     );
 }
-
