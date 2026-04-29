@@ -5,21 +5,25 @@ namespace Howestprime.Movies.Application.Movies;
 
 public sealed record SearchMovieCatalogInput(
     string Title,
-    IEnumerable<string> Genres
+    IEnumerable<string> Genres,
+    string UserRole
 );
 
 public sealed class SearchMovieCatalog(
-    ISearchMovieCatalogQuery searchMovieCatalogQuery
-) : IUseCase<SearchMovieCatalogInput, IEnumerable<MovieData>>
+    ISearchMovieCatalogQuery searchMovieCatalogQuery,
+    IAuthorizationService AuthorizationService
+) : IUseCase<SearchMovieCatalogInput, IReadOnlyList<MovieData>>
 {
 
-    public async Task<IEnumerable<MovieData>> Execute(SearchMovieCatalogInput input)
-    {
+     public Task<IReadOnlyList<MovieData>> Execute(SearchMovieCatalogInput input)
+    { 
         IReadOnlyList<GenreData> normalizedGenres = [
             .. input.Genres.Select(genre => new GenreData(genre))
         ];
 
-        return await searchMovieCatalogQuery.Fetch(
+        AuthorizationService.Authorize(input.UserRole, nameof(SearchMovieCatalog));
+
+        return searchMovieCatalogQuery.Fetch(
             MovieDataFilters.ByTitleAndGenres(input.Title, normalizedGenres)
         );
     }
