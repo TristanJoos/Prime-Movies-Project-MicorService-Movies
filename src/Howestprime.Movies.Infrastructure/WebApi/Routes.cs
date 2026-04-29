@@ -12,6 +12,7 @@ public static class Routes
         RouteGroupBuilder webApi = app.MapGroup("/api");
 
         webApi.MapMovieRoutes();
+        webApi.MapMovieEventRoutes();
         return webApi;
     }
 
@@ -36,5 +37,18 @@ public static class Routes
             .WithDescription("Find a movie by its unique identifier."); 
 
         return movies;
+    }
+
+    public static RouteGroupBuilder MapMovieEventRoutes(this IEndpointRouteBuilder app)
+    {
+        RouteGroupBuilder movieEvents = app.MapGroup("/movie-events")
+            .WithTags("Movie Events")
+            .WithDescription("All endpoints related to managing movie events.");
+
+        movieEvents.MapPost("/", ScheduleMovieEventController.Invoke)
+           .WithName("ScheduleMovieEvent")
+           .WithDescription("Schedule a new movie event.");
+
+        return movieEvents;
     }
 }
