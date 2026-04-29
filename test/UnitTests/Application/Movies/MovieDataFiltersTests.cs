@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Howestprime.Movies.Application.Contracts.Data;
-using Howestprime.Movies.Application.Movies;
 using Xunit;
+using Howestprime.Movies.Application.Movies;
 
 namespace UnitTests.Application.Movies;
 
@@ -35,6 +35,22 @@ public class MovieDataFiltersTests
 
         // Act & Assert
         Assert.True(compiledFilter(movie));
+    }
+
+    [Fact]
+    public void ById_FiltersCorrectly()
+    {
+        // Arrange
+        var targetId = Guid.NewGuid();
+        var filter = MovieDataFilters.ById(targetId);
+        var compiledFilter = filter.Compile();
+
+        var matchingMovie = new MovieData(targetId, "", "Inception", Array.Empty<GenreData>(), Array.Empty<ActorData>(), 13, 2010, 148, "");
+        var nonMatchingMovie = new MovieData(Guid.NewGuid(), "", "Interstellar", Array.Empty<GenreData>(), Array.Empty<ActorData>(), 13, 2010, 148, "");
+
+        // Act & Assert
+        Assert.True(compiledFilter(matchingMovie));
+        Assert.False(compiledFilter(nonMatchingMovie));
     }
 
     [Fact]
