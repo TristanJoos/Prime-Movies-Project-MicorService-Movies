@@ -1,17 +1,9 @@
-using Howestprime.Movies.Domain.Movies.Events;
-using Howestprime.Movies.Domain.Movies.ValueObjects;
 using Howestprime.Movies.Domain.Shared;
 
 namespace Howestprime.Movies.Domain.Movies;
 
 public readonly record struct MovieEventId(Guid Value) : IEntityId;
-/*Id (MovieEventId)	Unique identifier
-MovieId (uuid)	Id of the movie
-RoomId (uuid)	Id of the room
-Showtime (datetime)	Date and time of the event
-Capacity (int)	Room capacity
-Bookings (List<Booking>)	List of bookings for this event
-Visitors (int)	Number of visitors*/
+
 public sealed class MovieEvent : AggregateRoot<MovieEventId>
 {
     public Guid MovieId { get; private set; }
