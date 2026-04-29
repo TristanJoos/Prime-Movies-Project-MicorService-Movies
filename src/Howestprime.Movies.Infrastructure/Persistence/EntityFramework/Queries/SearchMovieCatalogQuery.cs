@@ -9,16 +9,16 @@ using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Configuration;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq.Expressions;
+using System.Collections.Immutable;
 
 public sealed class SearchMovieCatalogQuery(
     QueryDbContext context
 ) : ISearchMovieCatalogQuery
 {
-    public Task<IEnumerable<MovieData>> Fetch(Expression<Func<MovieData, bool>> filter)
+    public async Task<IReadOnlyList<MovieData>> Fetch(Expression<Func<MovieData, bool>> filter)
     {
-        return Task.FromResult(context.Movies
-            .Include(movie => movie.Genres)
+        return await context.Movies
             .Where(filter)
-            .AsEnumerable());
+            .ToListAsync();
     }
 }

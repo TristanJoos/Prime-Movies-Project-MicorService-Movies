@@ -15,7 +15,7 @@ public sealed class SearchMovieCatalog(
 ) : IUseCase<SearchMovieCatalogInput, IReadOnlyList<MovieData>>
 {
 
-     public Task<IReadOnlyList<MovieData>> Execute(SearchMovieCatalogInput input)
+     public async Task<IReadOnlyList<MovieData>> Execute(SearchMovieCatalogInput input)
     { 
         IReadOnlyList<GenreData> normalizedGenres = [
             .. input.Genres.Select(genre => new GenreData(genre))
@@ -23,7 +23,7 @@ public sealed class SearchMovieCatalog(
 
         AuthorizationService.Authorize(input.UserRole, nameof(SearchMovieCatalog));
 
-        return searchMovieCatalogQuery.Fetch(
+        return await searchMovieCatalogQuery.Fetch(
             MovieDataFilters.ByTitleAndGenres(input.Title, normalizedGenres)
         );
     }

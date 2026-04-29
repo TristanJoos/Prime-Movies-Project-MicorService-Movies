@@ -15,7 +15,7 @@ public static class ApplicationModule
         // Register command use cases
         services.AddScoped<IUseCase<RegisterMovieInput, Guid>, RegisterMovie>();
         // Register query use cases
-        services.AddScoped<IUseCase<SearchMovieCatalogInput, IEnumerable<MovieData>>, SearchMovieCatalog>();
+        services.AddScoped<IUseCase<SearchMovieCatalogInput, IReadOnlyList<MovieData>>, SearchMovieCatalog>();
         // Register Policies (example of automatic registration with reflection at boot time)
         
         services.RegisterPolicies();
