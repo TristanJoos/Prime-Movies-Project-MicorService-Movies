@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Migrations.PostgreSQL
 {
     [DbContext(typeof(PostgresDomainDbContext))]
-    [Migration("20260428101040_Initial")]
+    [Migration("20260429132240_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -54,6 +54,45 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Migratio
                     b.HasKey("Id");
 
                     b.ToTable("Movies", (string)null);
+                });
+
+            modelBuilder.Entity("Howestprime.Movies.Domain.Movies.MovieEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Showtime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MovieEvents", (string)null);
+                });
+
+            modelBuilder.Entity("Howestprime.Movies.Domain.Movies.Room", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("Howestprime.Movies.Domain.Movies.Movie", b =>

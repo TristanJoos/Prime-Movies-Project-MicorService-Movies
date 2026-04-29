@@ -12,6 +12,7 @@ public sealed class Room : AggregateRoot<RoomId>
     public int Capacity { get; private set; }
 
     public static Room Create(
+        RoomId? Id,
         string Name,
         int Capacity
     )
@@ -20,7 +21,7 @@ public sealed class Room : AggregateRoot<RoomId>
         Asserts.EnsureGreaterThan(Capacity, 0);
 
         Room room = new Room(
-            EntityId.New<RoomId>(),
+            Id ?? EntityId.New<RoomId>(),
             Name,
             Capacity
         );

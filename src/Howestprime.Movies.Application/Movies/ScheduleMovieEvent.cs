@@ -25,6 +25,7 @@ public sealed class ScheduleMovieEvent(
         {
             throw new InvalidOperationException("Movie not found");
         }
+        
         IMovieEventRepository repo = uow.Repo<IMovieEventRepository>();
         MovieEvent? existingEvent = await repo.ByShowtimeAndRoomId(input.Showtime, input.RoomId);
 
