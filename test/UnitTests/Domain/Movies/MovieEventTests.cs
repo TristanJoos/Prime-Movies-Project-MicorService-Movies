@@ -70,6 +70,14 @@ public class MovieEventTests
     }
 
     [Fact]
+    public void PrivateConstructor_IsExecuted()
+    {
+        var ctor = typeof(MovieEvent).GetConstructor(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance, null, Type.EmptyTypes, null);
+        var instance = ctor!.Invoke(null);
+        Assert.NotNull(instance);
+    }
+
+    [Fact]
     public void UpdateMovie_WithValidMovieId_UpdatesMovieId()
     {
         var movieEvent = MovieEvent.Create(

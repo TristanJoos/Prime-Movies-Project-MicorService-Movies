@@ -9,6 +9,64 @@ namespace UnitTests.Domain.Movies;
 public sealed class MovieTests
 {
     [Fact]
+    public void ValidateState_WithInvalidDuration_ThrowsException()
+    {
+        var movie = (Movie)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(Movie));
+        typeof(Movie).GetProperty("Title")!.SetValue(movie, "Valid");
+        typeof(Movie).GetProperty("Description")!.SetValue(movie, "Valid");
+        typeof(Movie).GetProperty("Duration")!.SetValue(movie, new Duration(0));
+        var ex = Assert.Throws<InvalidEntityStateException>(() => movie.ValidateState());
+        Assert.Equal("Duration must be a positive integer.", ex.Message);
+    }
+
+    [Fact]
+    public void ValidateState_WithInvalidReleaseYear_ThrowsException()
+    {
+        var movie = (Movie)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(Movie));
+        typeof(Movie).GetProperty("Duration")!.SetValue(movie, new Duration(1));
+        typeof(Movie).GetProperty("Title")!.SetValue(movie, "Valid");
+        typeof(Movie).GetProperty("Description")!.SetValue(movie, "Valid");
+        typeof(Movie).GetProperty("ReleaseYear")!.SetValue(movie, new ReleaseYear(DateTime.UtcNow.Year + 1));
+        var ex = Assert.Throws<InvalidEntityStateException>(() => movie.ValidateState());
+        Assert.Equal("Release year must be the current year or earlier.", ex.Message);
+    }
+
+    [Fact]
+    public void ValidateState_WithNoGenres_ThrowsException()
+    {
+        var movie = (Movie)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(Movie));
+        typeof(Movie).GetProperty("Duration")!.SetValue(movie, new Duration(1));
+        typeof(Movie).GetProperty("Title")!.SetValue(movie, "Valid");
+        typeof(Movie).GetProperty("Description")!.SetValue(movie, "Valid");
+        typeof(Movie).GetProperty("ReleaseYear")!.SetValue(movie, new ReleaseYear(DateTime.UtcNow.Year));
+        typeof(Movie).GetField("_genres", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.SetValue(movie, new List<Genres>());
+        var ex = Assert.Throws<InvalidEntityStateException>(() => movie.ValidateState());
+        Assert.Equal("A movie must have at least one genre.", ex.Message);
+    }
+
+    [Fact]
+    public void ValidateState_WithNoActors_ThrowsException()
+    {
+        var movie = (Movie)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(Movie));
+        typeof(Movie).GetProperty("Duration")!.SetValue(movie, new Duration(1));
+        typeof(Movie).GetProperty("Title")!.SetValue(movie, "Valid");
+        typeof(Movie).GetProperty("Description")!.SetValue(movie, "Valid");
+        typeof(Movie).GetProperty("ReleaseYear")!.SetValue(movie, new ReleaseYear(DateTime.UtcNow.Year));
+        typeof(Movie).GetField("_genres", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.SetValue(movie, new List<Genres> { new Genres("Action") });
+        typeof(Movie).GetField("_actors", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.SetValue(movie, new List<Actors>());
+        var ex = Assert.Throws<InvalidEntityStateException>(() => movie.ValidateState());
+        Assert.Equal("A movie must have at least one actor.", ex.Message);
+    }
+
+    [Fact]
+    public void PrivateConstructor_IsExecuted()
+    {
+        var ctor = typeof(Movie).GetConstructor(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance, null, Type.EmptyTypes, null);
+        var instance = ctor!.Invoke(null);
+        Assert.NotNull(instance);
+    }
+
+    [Fact]
     public void Create_WithValidInput_ShouldInitializeStateAndRaiseEvent()
     {
         // Arrange

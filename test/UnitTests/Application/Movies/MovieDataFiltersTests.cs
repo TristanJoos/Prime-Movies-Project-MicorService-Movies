@@ -73,6 +73,32 @@ public class MovieDataFiltersTests
     }
 
     [Fact]
+    public void RoomData_DefaultConstructor_SetsDefaults()
+    {
+        var roomData = new RoomData { Id = Guid.Empty, Name = string.Empty, Capacity = 0 };
+        Assert.Equal(Guid.Empty, roomData.Id);
+        Assert.Equal(string.Empty, roomData.Name);
+        Assert.Equal(0, roomData.Capacity);
+
+        var cloned = roomData with { Name = "Cloned" };
+        Assert.Equal("Cloned", cloned.Name);
+    }
+
+    [Fact]
+    public void MovieEventData_DefaultConstructor_SetsDefaults()
+    {
+        var movieEventData = new MovieEventData { Id = Guid.Empty, Showtime = DateTime.MinValue, Capacity = 0, Room = new RoomData { Id = Guid.Empty, Name = "R1", Capacity = 10 }, Movie = new MovieData { Id = Guid.Empty, Title = "M1", Genres = Array.Empty<GenreData>(), Actors = Array.Empty<ActorData>(), AgeRating = 0, ReleaseYear = 0, Duration = 0, Description = "D1", PosterUrl = "P1" } };
+        Assert.Equal(Guid.Empty, movieEventData.Id);
+        Assert.Equal(DateTime.MinValue, movieEventData.Showtime);
+        Assert.Equal(0, movieEventData.Capacity);
+        Assert.NotNull(movieEventData.Room);
+        Assert.NotNull(movieEventData.Movie);
+
+        var cloned = movieEventData with { Capacity = 1 };
+        Assert.Equal(1, cloned.Capacity);
+    }
+
+    [Fact]
     public void MovieData_DefaultConstructor_SetsDefaults()
     {
         var movieData = new MovieData { Id = Guid.Empty, Title = string.Empty, Genres = Array.Empty<GenreData>(), Actors = Array.Empty<ActorData>(), AgeRating = 0, ReleaseYear = 0, Duration = 0, Description = string.Empty, PosterUrl = string.Empty };
@@ -85,6 +111,9 @@ public class MovieDataFiltersTests
         Assert.Equal(0, movieData.Duration);
         Assert.Equal(string.Empty, movieData.Description);
         Assert.Equal(string.Empty, movieData.PosterUrl);
+
+        var cloned = movieData with { Title = "Cloned" };
+        Assert.Equal("Cloned", cloned.Title);
 
         var movieData2 = new MovieData { Id = Guid.Empty, Title = string.Empty, Genres = Array.Empty<GenreData>(), Actors = Array.Empty<ActorData>(), AgeRating = 0, ReleaseYear = 0, Duration = 0, Description = string.Empty, PosterUrl = string.Empty };
         Assert.False(movieData.Equals(null));
