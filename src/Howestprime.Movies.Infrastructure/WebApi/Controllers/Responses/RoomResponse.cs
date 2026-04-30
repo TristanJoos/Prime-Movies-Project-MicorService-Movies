@@ -1,4 +1,4 @@
-public sealed record Room(
+public sealed record RoomResponse(
     Guid Id,
     string Name,
     int Capacity
