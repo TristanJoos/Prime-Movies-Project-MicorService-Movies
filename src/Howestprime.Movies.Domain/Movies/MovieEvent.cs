@@ -76,4 +76,26 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
         MovieId = newMovieId;
         ValidateState();
     }
+
+    public void Book(Booking booking , string RoomName)
+     {
+         Asserts.EnsureNotEmpty(booking);
+         int totalVisitors = Visitors + booking.StandardVisitors + booking.DiscountVisitors;
+         if (totalVisitors > Capacity)
+         {
+             throw new InvalidOperationException("Cannot book more visitors than the capacity of the movie event.");
+         }
+         Bookings.Add(booking);
+         Visitors = totalVisitors;
+
+        this.RaiseDomainEvent(new BookingOpened(
+            booking.Id,
+            Id,
+            RoomName,
+            booking.PaymentStatus,
+            booking.StandardVisitors,
+            booking.DiscountVisitors,
+            booking.SeatNumbers
+        ));
+     }
 }
