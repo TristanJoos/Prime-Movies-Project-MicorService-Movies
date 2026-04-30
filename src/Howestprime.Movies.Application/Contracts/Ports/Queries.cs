@@ -9,3 +9,10 @@ public interface ISearchMovieCatalogQuery
         Expression<Func<MovieData, bool>> filter
     );
 }
+
+public interface IMovieEventQuery
+{
+    public Task<IReadOnlyList<MovieEventData>> Fetch(
+        Expression<Func<MovieEventData, bool>> filter
+    );
+}
