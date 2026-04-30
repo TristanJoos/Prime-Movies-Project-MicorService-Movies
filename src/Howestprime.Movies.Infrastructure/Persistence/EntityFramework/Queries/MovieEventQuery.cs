@@ -10,11 +10,11 @@ using System.Linq.Expressions;
 
 public sealed class MovieEventQuery(
     QueryDbContext context
-) : ISearchMovieCatalogQuery
+) : IMovieEventQuery
 {
-    public async Task<IReadOnlyList<MovieData>> Fetch(Expression<Func<MovieData, bool>> filter)
+    public async Task<IReadOnlyList<MovieEventData>> Fetch(Expression<Func<MovieEventData, bool>> filter)
     {
-        return await context.Movies
+        return await context.MovieEvents
             .Where(filter)
             .ToListAsync();
     }
