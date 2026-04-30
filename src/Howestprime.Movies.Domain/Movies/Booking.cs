@@ -15,7 +15,6 @@ public readonly record struct BookingId(Guid Value) : IEntityId;
 
 public sealed class Booking : Entity<BookingId>
 {
-    public Guid Id { get; private set; }
     public BookingStatus BookingStatus { get; private set; }
     public PaymentStatus PaymentStatus { get; private set; }
     public int StandardVisitors { get; private set; }
@@ -23,14 +22,13 @@ public sealed class Booking : Entity<BookingId>
     public List<string> SeatNumbers { get; private set; }
 
     private Booking(
-        Guid id,
+        BookingId id,
         BookingStatus bookingStatus,
         PaymentStatus paymentStatus,
         int standardVisitors,
         int discountVisitors,
-        List<string> seatNumbers)
+        List<string> seatNumbers) : base(id)
     {
-        Id = id;
         BookingStatus = bookingStatus;
         PaymentStatus = paymentStatus;
         StandardVisitors = standardVisitors;
@@ -46,7 +44,7 @@ public sealed class Booking : Entity<BookingId>
         if (seatNumbers == null || seatNumbers.Count == 0) throw new ArgumentException("At least one seat number must be provided.");
 
         return new Booking(
-            id: Guid.NewGuid(),
+            id: EntityId.New<BookingId>(),
             bookingStatus: bookingStatus,
             paymentStatus: paymentStatus,
             standardVisitors: standardVisitors,
