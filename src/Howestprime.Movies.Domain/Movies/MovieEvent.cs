@@ -10,6 +10,8 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
     public RoomId RoomId { get; private set; }
     public DateTime Showtime { get; private set; }
     public int Capacity { get; private set; }
+    public List<Booking> Bookings { get; private set; } = new();
+    public int Visitors { get; private set; }
 
     public static MovieEvent Create(
         MovieId MovieId,
