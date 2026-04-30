@@ -1,3 +1,4 @@
+using Howestprime.Movies.Domain.Movies.Events;
 using Howestprime.Movies.Domain.Shared;
 
 namespace Howestprime.Movies.Domain.Movies;
@@ -90,9 +91,9 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
 
         this.RaiseDomainEvent(new BookingOpened(
             booking.Id,
-            Id,
+            this.MovieId,
             RoomName,
-            booking.PaymentStatus,
+            this.Showtime,
             booking.StandardVisitors,
             booking.DiscountVisitors,
             booking.SeatNumbers

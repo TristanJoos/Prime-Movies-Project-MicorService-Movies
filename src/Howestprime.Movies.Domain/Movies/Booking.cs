@@ -19,7 +19,7 @@ public sealed class Booking : Entity<BookingId>
     public PaymentStatus PaymentStatus { get; private set; }
     public int StandardVisitors { get; private set; }
     public int DiscountVisitors { get; private set; }
-    public List<string> SeatNumbers { get; private set; }
+    public IList<string> SeatNumbers { get; private set; }
 
     private Booking(
         BookingId id,
@@ -27,7 +27,7 @@ public sealed class Booking : Entity<BookingId>
         PaymentStatus paymentStatus,
         int standardVisitors,
         int discountVisitors,
-        List<string> seatNumbers) : base(id)
+        IList<string> seatNumbers) : base(id)
     {
         BookingStatus = bookingStatus;
         PaymentStatus = paymentStatus;
@@ -37,7 +37,7 @@ public sealed class Booking : Entity<BookingId>
     }
     
 
-    public static Booking Create(BookingStatus bookingStatus, PaymentStatus paymentStatus, int standardVisitors, int discountVisitors, List<string> seatNumbers)
+    public static Booking Create(BookingStatus bookingStatus, PaymentStatus paymentStatus, int standardVisitors, int discountVisitors, IList<string> seatNumbers)
     {
         if (standardVisitors < 0) throw new ArgumentException("Standard visitors cannot be negative.");
         if (discountVisitors < 0) throw new ArgumentException("Discount visitors cannot be negative.");
