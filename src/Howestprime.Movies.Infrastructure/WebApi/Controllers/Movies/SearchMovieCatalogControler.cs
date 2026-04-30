@@ -18,7 +18,7 @@ public record SearchMovieCatalogRequest(
 
 public static class SearchMovieCatalogController
 {
-    public static async Task<Results<Ok<MovieDataCollection>, BadRequest>> Invoke(
+    public static async Task<Results<Ok<MovieDataCollectionResponse>, BadRequest>> Invoke(
         [AsParameters] SearchMovieCatalogRequest request
     )
     {
@@ -28,6 +28,6 @@ public static class SearchMovieCatalogController
         IReadOnlyList<MovieData> moviesData =
             await request.UseCase.Execute(input);
 
-        return TypedResults.Ok(new MovieDataCollection([.. moviesData]));
+        return TypedResults.Ok(new MovieDataCollectionResponse([.. moviesData]));
     }
 }

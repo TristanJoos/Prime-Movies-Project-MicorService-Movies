@@ -3,18 +3,18 @@ using Howestprime.Movies.Application.Contracts.Ports;
 
 namespace Howestprime.Movies.Application.Movies;
 
-public sealed record SearchMovieEventsInTimeRangeInput(
+public sealed record GetHowestprimeScheduleInput(
     DateTime FromDate,
     DateTime ToDate 
 );
 
 public sealed class SearchMovieEventsInTimeRange(
     IMovieEventQuery MovieEventQuery
-) : IUseCase<SearchMovieEventsInTimeRangeInput, IReadOnlyList<MovieEventData>>
+) : IUseCase<GetHowestprimeScheduleInput, IReadOnlyList<MovieEventData>>
 {
 
 
-    public async Task<IReadOnlyList<MovieEventData>> Execute(SearchMovieEventsInTimeRangeInput? input)
+    public async Task<IReadOnlyList<MovieEventData>> Execute(GetHowestprimeScheduleInput? input)
     {
         DateTime from = input?.FromDate ?? DateTime.UtcNow;
         DateTime to = input?.ToDate ?? DateTime.UtcNow;
