@@ -107,17 +107,17 @@ public class FindMovieByIdTests
 
             var movies = new List<MovieData>
             {
-                new MovieData(
-                    _expectedId,
-                    "https://example.com/inception.jpg",
-                    "Inception",
-                    new[] { new GenreData("Action"), new GenreData("Sci-Fi") },
-                    new[] { new ActorData("Leonardo DiCaprio") },
-                    13,
-                    2010,
-                    148,
-                    "A thief who steals corporate secrets..."
-                )
+                new MovieData {
+                    Id = _expectedId,
+                    PosterUrl = "https://example.com/inception.jpg",
+                    Title = "Inception",
+                    Genres = new[] { new GenreData("Action"), new GenreData("Sci-Fi") },
+                    Actors = new[] { new ActorData("Leonardo DiCaprio") },
+                    AgeRating = 13,
+                    ReleaseYear = 2010,
+                    Duration = 148,
+                    Description = "A thief who steals corporate secrets..."
+                }
             };
 
             return Task.FromResult<IReadOnlyList<MovieData>>(movies);

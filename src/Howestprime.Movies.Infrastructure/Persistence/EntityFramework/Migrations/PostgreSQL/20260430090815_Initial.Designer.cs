@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Migrations.PostgreSQL
 {
     [DbContext(typeof(PostgresDomainDbContext))]
-    [Migration("20260429132240_Initial")]
+    [Migration("20260430090815_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

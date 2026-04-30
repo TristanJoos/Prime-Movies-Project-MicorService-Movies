@@ -14,9 +14,9 @@ public class MovieDataFiltersTests
         var filter = MovieDataFilters.ByTitleAndGenres("Inception", new[] { new GenreData("Action") });
         var compiledFilter = filter.Compile();
 
-        var matchingMovie = new MovieData(Guid.NewGuid(), "", "Inception", new[] { new GenreData("Action") }, Array.Empty<ActorData>(), 13, 2010, 148, "");
-        var nonMatchingMovieTitle = new MovieData(Guid.NewGuid(), "", "Interstellar", new[] { new GenreData("Action") }, Array.Empty<ActorData>(), 13, 2010, 148, "");
-        var nonMatchingMovieGenre = new MovieData(Guid.NewGuid(), "", "Inception", new[] { new GenreData("Comedy") }, Array.Empty<ActorData>(), 13, 2010, 148, "");
+        var matchingMovie = new MovieData { Id = Guid.NewGuid(), PosterUrl = "", Title = "Inception", Genres = new[] { new GenreData("Action") }, Actors = Array.Empty<ActorData>(), AgeRating = 13, ReleaseYear = 2010, Duration = 148, Description = "" };
+        var nonMatchingMovieTitle = new MovieData { Id = Guid.NewGuid(), PosterUrl = "", Title = "Interstellar", Genres = new[] { new GenreData("Action") }, Actors = Array.Empty<ActorData>(), AgeRating = 13, ReleaseYear = 2010, Duration = 148, Description = "" };
+        var nonMatchingMovieGenre = new MovieData { Id = Guid.NewGuid(), PosterUrl = "", Title = "Inception", Genres = new[] { new GenreData("Comedy") }, Actors = Array.Empty<ActorData>(), AgeRating = 13, ReleaseYear = 2010, Duration = 148, Description = "" };
 
         // Act & Assert
         Assert.True(compiledFilter(matchingMovie));
@@ -31,7 +31,7 @@ public class MovieDataFiltersTests
         var filter = MovieDataFilters.ByTitleAndGenres("", Array.Empty<GenreData>());
         var compiledFilter = filter.Compile();
 
-        var movie = new MovieData(Guid.NewGuid(), "", "Any Title", new[] { new GenreData("Comedy") }, Array.Empty<ActorData>(), 13, 2010, 148, "");
+        var movie = new MovieData { Id = Guid.NewGuid(), PosterUrl = "", Title = "Any Title", Genres = new[] { new GenreData("Comedy") }, Actors = Array.Empty<ActorData>(), AgeRating = 13, ReleaseYear = 2010, Duration = 148, Description = "" };
 
         // Act & Assert
         Assert.True(compiledFilter(movie));
@@ -45,8 +45,8 @@ public class MovieDataFiltersTests
         var filter = MovieDataFilters.ById(targetId);
         var compiledFilter = filter.Compile();
 
-        var matchingMovie = new MovieData(targetId, "", "Inception", Array.Empty<GenreData>(), Array.Empty<ActorData>(), 13, 2010, 148, "");
-        var nonMatchingMovie = new MovieData(Guid.NewGuid(), "", "Interstellar", Array.Empty<GenreData>(), Array.Empty<ActorData>(), 13, 2010, 148, "");
+        var matchingMovie = new MovieData { Id = targetId, PosterUrl = "", Title = "Inception", Genres = Array.Empty<GenreData>(), Actors = Array.Empty<ActorData>(), AgeRating = 13, ReleaseYear = 2010, Duration = 148, Description = "" };
+        var nonMatchingMovie = new MovieData { Id = Guid.NewGuid(), PosterUrl = "", Title = "Interstellar", Genres = Array.Empty<GenreData>(), Actors = Array.Empty<ActorData>(), AgeRating = 13, ReleaseYear = 2010, Duration = 148, Description = "" };
 
         // Act & Assert
         Assert.True(compiledFilter(matchingMovie));
@@ -73,9 +73,35 @@ public class MovieDataFiltersTests
     }
 
     [Fact]
+    public void RoomData_DefaultConstructor_SetsDefaults()
+    {
+        var roomData = new RoomData { Id = Guid.Empty, Name = string.Empty, Capacity = 0 };
+        Assert.Equal(Guid.Empty, roomData.Id);
+        Assert.Equal(string.Empty, roomData.Name);
+        Assert.Equal(0, roomData.Capacity);
+
+        var cloned = roomData with { Name = "Cloned" };
+        Assert.Equal("Cloned", cloned.Name);
+    }
+
+    [Fact]
+    public void MovieEventData_DefaultConstructor_SetsDefaults()
+    {
+        var movieEventData = new MovieEventData { Id = Guid.Empty, Showtime = DateTime.MinValue, Capacity = 0, Room = new RoomData { Id = Guid.Empty, Name = "R1", Capacity = 10 }, Movie = new MovieData { Id = Guid.Empty, Title = "M1", Genres = Array.Empty<GenreData>(), Actors = Array.Empty<ActorData>(), AgeRating = 0, ReleaseYear = 0, Duration = 0, Description = "D1", PosterUrl = "P1" } };
+        Assert.Equal(Guid.Empty, movieEventData.Id);
+        Assert.Equal(DateTime.MinValue, movieEventData.Showtime);
+        Assert.Equal(0, movieEventData.Capacity);
+        Assert.NotNull(movieEventData.Room);
+        Assert.NotNull(movieEventData.Movie);
+
+        var cloned = movieEventData with { Capacity = 1 };
+        Assert.Equal(1, cloned.Capacity);
+    }
+
+    [Fact]
     public void MovieData_DefaultConstructor_SetsDefaults()
     {
-        var movieData = new MovieData();
+        var movieData = new MovieData { Id = Guid.Empty, Title = string.Empty, Genres = Array.Empty<GenreData>(), Actors = Array.Empty<ActorData>(), AgeRating = 0, ReleaseYear = 0, Duration = 0, Description = string.Empty, PosterUrl = string.Empty };
         Assert.Equal(Guid.Empty, movieData.Id);
         Assert.Equal(string.Empty, movieData.Title);
         Assert.Empty(movieData.Genres);
@@ -86,7 +112,10 @@ public class MovieDataFiltersTests
         Assert.Equal(string.Empty, movieData.Description);
         Assert.Equal(string.Empty, movieData.PosterUrl);
 
-        var movieData2 = new MovieData();
+        var cloned = movieData with { Title = "Cloned" };
+        Assert.Equal("Cloned", cloned.Title);
+
+        var movieData2 = new MovieData { Id = Guid.Empty, Title = string.Empty, Genres = Array.Empty<GenreData>(), Actors = Array.Empty<ActorData>(), AgeRating = 0, ReleaseYear = 0, Duration = 0, Description = string.Empty, PosterUrl = string.Empty };
         Assert.False(movieData.Equals(null));
         Assert.NotNull(movieData.ToString());
 

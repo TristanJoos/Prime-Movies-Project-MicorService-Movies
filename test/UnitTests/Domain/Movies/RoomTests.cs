@@ -28,6 +28,14 @@ public class RoomTests
     }
 
     [Fact]
+    public void PrivateConstructor_IsExecuted()
+    {
+        var ctor = typeof(Room).GetConstructor(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance, null, Type.EmptyTypes, null);
+        var instance = ctor!.Invoke(null);
+        Assert.NotNull(instance);
+    }
+
+    [Fact]
     public void Create_WithEmptyName_ThrowsArgumentException()
     {
         Assert.Throws<ArgumentException>(() => Room.Create(null, "", 50));

@@ -13,6 +13,7 @@ public static class Routes
 
         webApi.MapMovieRoutes();
         webApi.MapMovieEventRoutes();
+        webApi.MapScheduleRoutes();
         return webApi;
     }
 
@@ -30,11 +31,11 @@ public static class Routes
             .WithName("SearchMovieCatalog")
             .WithDescription("Filter movies based on title and genres.");
 
-        
+
 
         movies.MapGet("/{id:guid}", FindMovieByIdController.Invoke)
             .WithName("FindMovieById")
-            .WithDescription("Find a movie by its unique identifier."); 
+            .WithDescription("Find a movie by its unique identifier.");
 
         return movies;
     }
@@ -50,5 +51,18 @@ public static class Routes
            .WithDescription("Schedule a new movie event.");
 
         return movieEvents;
+    }
+
+    public static RouteGroupBuilder MapScheduleRoutes(this IEndpointRouteBuilder app)
+    {
+        RouteGroupBuilder schedule = app.MapGroup("/howestprime-schedule")
+            .WithTags("Schedule")
+            .WithDescription("Endpoints related to the movie event schedule.");
+
+        schedule.MapGet("/", GetHowestprimeScheduleController.Invoke)
+            .WithName("GetHowestprimeSchedule")
+            .WithDescription("Retrieve the schedule of upcoming movie events.");
+
+        return schedule;
     }
 }
