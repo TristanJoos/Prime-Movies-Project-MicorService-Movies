@@ -1,10 +1,6 @@
-public record RoomData(
-    Guid Id,
-    string Name,
-    int Capacity
-)
-{
-    public RoomData() : this(Guid.Empty, string.Empty, 0)
-    {
-    }
+public record RoomData{
+    public required Guid Id { get; init; }
+    public required string Name { get; init; }
+    public required int Capacity { get; init; }
 }
+

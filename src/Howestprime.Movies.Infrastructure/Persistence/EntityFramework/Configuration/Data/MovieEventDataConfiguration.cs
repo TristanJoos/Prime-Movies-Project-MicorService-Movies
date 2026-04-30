@@ -13,11 +13,18 @@ public sealed class MovieEventDataConfiguration : IEntityTypeConfiguration<Movie
         builder.HasKey(movieEvent => movieEvent.Id);
         builder.Property(movieEvent => movieEvent.Id).ValueGeneratedNever();
 
-       builder.Property(movieEvent => movieEvent.Movie).IsRequired();
-       builder.Property(movieEvent => movieEvent.Room).IsRequired();
-
        builder.Property(movieEvent => movieEvent.Showtime).IsRequired();
        builder.Property(movieEvent => movieEvent.Capacity).IsRequired();
+
+       builder.HasOne(movieEvent => movieEvent.Movie)
+            .WithMany()
+            .HasForeignKey("MovieId")
+            .IsRequired();
+
+        builder.HasOne(movieEvent => movieEvent.Room)
+            .WithMany()
+            .HasForeignKey("RoomId")
+            .IsRequired();
     }
 
 }

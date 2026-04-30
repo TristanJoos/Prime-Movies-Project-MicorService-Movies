@@ -31,11 +31,11 @@ public static class Routes
             .WithName("SearchMovieCatalog")
             .WithDescription("Filter movies based on title and genres.");
 
-        
+
 
         movies.MapGet("/{id:guid}", FindMovieByIdController.Invoke)
             .WithName("FindMovieById")
-            .WithDescription("Find a movie by its unique identifier."); 
+            .WithDescription("Find a movie by its unique identifier.");
 
         return movies;
     }

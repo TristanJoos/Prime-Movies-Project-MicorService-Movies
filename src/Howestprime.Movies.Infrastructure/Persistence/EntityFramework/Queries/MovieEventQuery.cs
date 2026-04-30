@@ -15,6 +15,8 @@ public sealed class MovieEventQuery(
     public async Task<IReadOnlyList<MovieEventData>> Fetch(Expression<Func<MovieEventData, bool>> filter)
     {
         return await context.MovieEvents
+        .Include(movieEvent => movieEvent.Movie)
+        .Include(movieEvent => movieEvent.Room)
             .Where(filter)
             .ToListAsync();
     }

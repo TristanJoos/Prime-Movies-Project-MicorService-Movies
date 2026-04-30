@@ -10,9 +10,7 @@ using Howestprime.Movies.Domain.Movies;
 namespace Howestprime.Movies.Infrastructure.WebApi.Controllers.Movies;
 
 public record GetHowestprimeScheduleRequest(
-    [FromQuery] DateTime FromDate,
-    [FromQuery] DateTime ToDate,
-    [FromServices] IUseCase<GetHowestprimeScheduleInput, IEnumerable<MovieEventData>> UseCase
+    [FromServices] IUseCase<GetHowestprimeScheduleInput, IReadOnlyList<MovieEventData>> UseCase
 );
 
 public static class GetHowestprimeScheduleController
@@ -20,10 +18,12 @@ public static class GetHowestprimeScheduleController
     public static async Task<Results<Ok<HowestprimeScheduleResponse>, BadRequest>> Invoke(
         [AsParameters] GetHowestprimeScheduleRequest request
     )
-    {
+    {   
 
-        GetHowestprimeScheduleInput input = new(request.FromDate, request.ToDate);
-        IEnumerable<MovieEventData>? movieEvents = await request.UseCase.Execute(input);
+        DateTime fromDate = DateTime.UtcNow;
+        DateTime toDate = fromDate.AddDays(14);
+        GetHowestprimeScheduleInput input = new(fromDate, toDate);
+        IReadOnlyList<MovieEventData>? movieEvents = await request.UseCase.Execute(input);
 
         if (movieEvents == null)
         {
