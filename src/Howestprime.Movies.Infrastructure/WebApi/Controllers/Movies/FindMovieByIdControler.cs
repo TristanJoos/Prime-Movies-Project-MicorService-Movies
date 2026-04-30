@@ -16,7 +16,7 @@ public record FindMovieByIdRequest(
 
 public static class FindMovieByIdController
 {
-    public static async Task<Results<Ok<MovieData>, BadRequest>> Invoke(
+    public static async Task<Results<Ok<MovieResponse>, BadRequest>> Invoke(
         [AsParameters] FindMovieByIdRequest request
     )
     {
@@ -28,7 +28,18 @@ public static class FindMovieByIdController
         {
             return TypedResults.BadRequest();
         }
+        MovieResponse movieResponse = new(
+            movieData.Id,
+            movieData.Title,
+            movieData.Description,
+            movieData.ReleaseYear,
+            movieData.Duration,
+            movieData.Genres.Select(g => g.Value).ToList(),
+            movieData.Actors.Select(a => a.Value).ToList(),
+            movieData.AgeRating,
+            movieData.PosterUrl
+        );
 
-        return TypedResults.Ok(movieData);
+        return TypedResults.Ok(movieResponse);
     }
 }
