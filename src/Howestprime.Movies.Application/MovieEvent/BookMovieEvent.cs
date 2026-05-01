@@ -1,7 +1,9 @@
+using Aornis;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Movies;
 using Howestprime.Movies.Domain.Movies.Repositorys;
 using Howestprime.Movies.Domain.Movies.ValueObjects;
+using Howestprime.Movies.Shared.Exceptions;
 
 namespace Howestprime.Movies.Application.Movies;
 
@@ -15,30 +17,51 @@ public sealed class BookMovieEvent(
     IUnitOfWork uow
 ) : IUseCase<BookMovieEventInput, Guid>
 {
-    private readonly IUnitOfWork uow = uow;
-
     public async Task<Guid> Execute(BookMovieEventInput input)
     {
-        MovieEvent movieEvent = await uow.Get<IMovieEventRepository>().GetById(input.MovieEventId);
-        MovieEvent movieEvent = MovieEvent.Book(
-            input.MovieEventId,
+        if (input.StandardVisitors < 0 || input.DiscountVisitors < 0)
+        {
+            throw new ArgumentException("Visitors cannot be negative.");
+        }
+        if (input.MovieEventId == Guid.Empty)
+        {
+            throw new ArgumentException("Movie event ID cannot be empty.");
+        }
+
+        MovieEventId movieEventId = new(input.MovieEventId);
+        Optional<MovieEvent> optionalMovieEvent = await uow.Repo<IMovieEventRepository>().ById(movieEventId);
+        if (!optionalMovieEvent.HasValue)
+        {
+            throw new NotFoundException("Movie event not found.");
+        }
+
+        if (optionalMovieEvent.Value.Capacity < input.StandardVisitors + input.DiscountVisitors)
+        {
+            throw new InvalidOperationException("Not enough available seats for this movie event.");
+        }
+
+
+        Optional<Room> optionalRoom = await uow.Repo<IRoomRepository>().ById(optionalMovieEvent.Value.RoomId);
+        if (!optionalRoom.HasValue)
+        {
+            throw new NotFoundException("Room not found.");
+        }
+        DateTime fourteenDaysFromNow = DateTime.UtcNow.AddDays(14);
+        
+        if (optionalMovieEvent.Value.Showtime < DateTime.UtcNow || optionalMovieEvent.Value.Showtime > fourteenDaysFromNow)
+        {
+            throw new InvalidOperationException("Bookings can only be made for events occurring within the next 14 days.");
+        }
+
+        Booking booking = Booking.Create(
             input.StandardVisitors,
             input.DiscountVisitors
         );
+        optionalMovieEvent.Value.Book(booking, optionalRoom.Value.Name);
 
-        await uow.Save<IMovieEventRepository>(movieEvent);
+        await uow.Save<IMovieEventRepository>(optionalMovieEvent.Value);
         await uow.Do();
 
-        return movieEvent.Id.Value;
-    }
-            input.Actors.Select(Actors.Create),
-            AgeRating.Create(input.AgeRating),
-            PosterUrl.Create(input.PosterUrl)
-        );
-
-        await uow.Save<IMovieRepository>(movie);
-        await uow.Do();
-
-        return movie.Id.Value;
+        return booking.Id.Value;
     }
 }

@@ -16,11 +16,10 @@ public sealed class MovieEventRepository (
             .FirstOrDefaultAsync(e => e.Showtime == showtime && e.RoomId == roomIdValue);
     }
 
-    public async Task<IReadOnlyList<MovieEvent>> ById(Guid movieEventId)
+    public async Task<MovieEvent?> GetById(Guid movieEventId)
     {
         MovieEventId movieEventIdValue = new(movieEventId);
         return await _context.Set<MovieEvent>()
-            .Where(e => e.Id == movieEventIdValue)
-            .ToListAsync();
+            .FirstOrDefaultAsync(e => e.Id == movieEventIdValue);
     }
 }
