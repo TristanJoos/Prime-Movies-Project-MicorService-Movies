@@ -1,4 +1,4 @@
-openapi: '3.1.1'
+openapi: "3.1.1"
 info:
   title: Howestprime.Movies API
   description: API documentation for Howestprime.Movies application.
@@ -13,23 +13,23 @@ paths:
   /api/movie-catalog:
     post:
       tags:
-        - 'Movie, Movies, Movie Catalog'
+        - "Movie, Movies, Movie Catalog"
       description: Register a new movie in the catalog.
       operationId: RegisterMovie
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterMovieBody'
+              $ref: "#/components/schemas/RegisterMovieBody"
         required: true
       responses:
-        '201':
+        "201":
           description: Created
-        '400':
+        "400":
           description: Bad Request
     get:
       tags:
-        - 'Movie, Movies, Movie Catalog'
+        - "Movie, Movies, Movie Catalog"
       description: Search the movie catalog by title and/or genres.
       operationId: SearchMovieCatalog
       parameters:
@@ -47,18 +47,18 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieCollection'
-        '400':
+                $ref: "#/components/schemas/MovieCollection"
+        "400":
           description: Bad Request
-  '/api/movie-catalog/{movieId}':
+  "/api/movie-catalog/{movieId}":
     get:
       tags:
-        - 'Movie, Movies, Movie Catalog'
+        - "Movie, Movies, Movie Catalog"
       description: Find a movie in the catalog by its ID.
       operationId: FindMovieById
       parameters:
@@ -74,34 +74,59 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Movie'
-        '400':
+                $ref: "#/components/schemas/Movie"
+        "400":
           description: Bad Request
+    put:
+      tags:
+        - "Movie, Movies, Movie Catalog"
+      description: Update the details of a movie in the catalog.
+      operationId: UpdateMovie
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMovieBody"
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "404":
+          description: Movie not found
   /api/movie-events:
     post:
       tags:
-        - 'MovieEvent, MovieEvents, Movie Showtimes'
+        - "MovieEvent, MovieEvents, Movie Showtimes"
       description: Schedule a new movie event (showtime).
       operationId: ScheduleMovieEvent
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ScheduleMovieEventBody'
+              $ref: "#/components/schemas/ScheduleMovieEventBody"
         required: true
       responses:
-        '201':
+        "201":
           description: Created
-        '400':
+        "400":
           description: Bad Request
     get:
       tags:
-        - 'MovieEvent, MovieEvents, Movie Showtimes'
+        - "MovieEvent, MovieEvents, Movie Showtimes"
       description: Find movie events for a given month and year.
       operationId: FindMovieEventsForMonth
       parameters:
@@ -109,7 +134,7 @@ paths:
           in: query
           required: true
           schema:
-            pattern: '^-?(?:0|[1-9]\d*)$'
+            pattern: "^-?(?:0|[1-9]\\d*)$"
             type:
               - integer
               - string
@@ -118,26 +143,26 @@ paths:
           in: query
           required: true
           schema:
-            pattern: '^-?(?:0|[1-9]\d*)$'
+            pattern: "^-?(?:0|[1-9]\\d*)$"
             type:
               - integer
               - string
             format: int32
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MovieEvent'
-        '400':
+                  $ref: "#/components/schemas/MovieEvent"
+        "400":
           description: Bad Request
-  '/api/movie-events/{movieEventId}/bookings':
+  "/api/movie-events/{movieEventId}/bookings":
     post:
       tags:
-        - 'MovieEvent, MovieEvents, Movie Showtimes'
+        - "MovieEvent, MovieEvents, Movie Showtimes"
       description: Book a movie event for a given number of standard and discount visitors.
       operationId: BookMovieEvent
       parameters:
@@ -151,27 +176,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookMovieEventBody'
+              $ref: "#/components/schemas/BookMovieEventBody"
         required: true
       responses:
-        '201':
+        "201":
           description: Created
-        '400':
+        "400":
           description: Bad Request
   /api/howestprime-schedule:
     get:
       tags:
-        - 'HowestprimeSchedule, Schedule, Movie Showtimes'
+        - "HowestprimeSchedule, Schedule, Movie Showtimes"
       description: Find the Howestprime movie schedule for the next 14 days.
       operationId: FindHowestprimeSchedule
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HowestprimeSchedule'
-        '400':
+                $ref: "#/components/schemas/HowestprimeSchedule"
+        "400":
           description: Bad Request
 components:
   schemas:
@@ -182,13 +207,13 @@ components:
       type: object
       properties:
         standardVisitors:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
           format: int32
         discountVisitors:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
@@ -207,7 +232,7 @@ components:
         movieEvents:
           type: array
           items:
-            $ref: '#/components/schemas/MovieEvent'
+            $ref: "#/components/schemas/MovieEvent"
     Movie:
       required:
         - id
@@ -229,13 +254,13 @@ components:
         description:
           type: string
         releaseYear:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
           format: int32
         duration:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
@@ -249,7 +274,7 @@ components:
           items:
             type: string
         ageRating:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
@@ -264,7 +289,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Movie'
+            $ref: "#/components/schemas/Movie"
     MovieEvent:
       required:
         - id
@@ -278,18 +303,62 @@ components:
           type: string
           format: uuid
         movie:
-          $ref: '#/components/schemas/Movie'
+          $ref: "#/components/schemas/Movie"
         room:
-          $ref: '#/components/schemas/Room'
+          $ref: "#/components/schemas/Room"
         showtime:
           type: string
           format: date-time
         capacity:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
           format: int32
+    UpdateMovieBody:
+      required:
+        - title
+        - description
+        - releaseYear
+        - duration
+        - genres
+        - actors
+        - ageRating
+        - posterUrl
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        releaseYear:
+          pattern: "^-?(?:0|[1-9]\\d*)$"
+          type:
+            - integer
+            - string
+          format: int32
+        duration:
+          pattern: "^-?(?:0|[1-9]\\d*)$"
+          type:
+            - integer
+            - string
+          format: int32
+        genres:
+          type: array
+          items:
+            type: string
+        actors:
+          type: array
+          items:
+            type: string
+        ageRating:
+          pattern: "^-?(?:0|[1-9]\\d*)$"
+          type:
+            - integer
+            - string
+          format: int32
+        posterUrl:
+          type: string
     RegisterMovieBody:
       required:
         - title
@@ -307,13 +376,13 @@ components:
         description:
           type: string
         releaseYear:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
           format: int32
         duration:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
@@ -327,7 +396,7 @@ components:
           items:
             type: string
         ageRating:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
@@ -347,7 +416,7 @@ components:
         name:
           type: string
         capacity:
-          pattern: '^-?(?:0|[1-9]\d*)$'
+          pattern: "^-?(?:0|[1-9]\\d*)$"
           type:
             - integer
             - string
@@ -369,6 +438,6 @@ components:
           type: string
           format: date-time
 tags:
-  - name: 'Movie, Movies, Movie Catalog'
-  - name: 'MovieEvent, MovieEvents, Movie Showtimes'
-  - name: 'HowestprimeSchedule, Schedule, Movie Showtimes'
+  - name: "Movie, Movies, Movie Catalog"
+  - name: "MovieEvent, MovieEvents, Movie Showtimes"
+  - name: "HowestprimeSchedule, Schedule, Movie Showtimes"

@@ -277,5 +277,409 @@ public sealed class MovieTests
         // Assert
         Assert.NotNull(movie);
     }
+
+    [Fact]
+    public void ChangeDetails_WithValidInput_ShouldUpdateAllProperties()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newGenres = new List<Genres> { Genres.Create("Action"), Genres.Create("Thriller") };
+        var newActors = new List<Actors> { Actors.Create("New Actor 1"), Actors.Create("New Actor 2") };
+
+        // Act
+        movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            newGenres,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        );
+
+        // Assert
+        Assert.Equal("Updated Title", movie.Title);
+        Assert.Equal("Updated Description", movie.Description);
+        Assert.Equal(2021, movie.ReleaseYear.Value);
+        Assert.Equal(150, movie.Duration.Value);
+        Assert.Equal(2, movie.Genres.Count);
+        Assert.Equal(2, movie.Actors.Count);
+        Assert.Equal(16, movie.AgeRating.Value);
+        Assert.Equal("https://example.com/updated.jpg", movie.PosterUrl.Value);
+    }
+
+    [Fact]
+    public void ChangeDetails_WithValidInput_ShouldRaiseDomainEvent()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        movie.ClearDomainEvents(); // Clear the Create event
+
+        var newGenres = new List<Genres> { Genres.Create("Thriller") };
+        var newActors = new List<Actors> { Actors.Create("New Actor") };
+
+        // Act
+        movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            newGenres,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        );
+
+        // Assert
+        Assert.NotEmpty(movie.DomainEvents);
+        Assert.True(movie.DomainEvents.Any(e => e.GetType().Name == "MovieDetailsChanged"));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public void ChangeDetails_WithEmptyTitle_ShouldThrowArgumentException(string? invalidTitle)
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newGenres = new List<Genres> { Genres.Create("Action") };
+        var newActors = new List<Actors> { Actors.Create("New Actor") };
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => movie.ChangeDetails(
+            invalidTitle!,
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            newGenres,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        ));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public void ChangeDetails_WithEmptyDescription_ShouldThrowArgumentException(string? invalidDescription)
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newGenres = new List<Genres> { Genres.Create("Action") };
+        var newActors = new List<Actors> { Actors.Create("New Actor") };
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => movie.ChangeDetails(
+            "Updated Title",
+            invalidDescription!,
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            newGenres,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        ));
+    }
+
+    [Fact]
+    public void ChangeDetails_WithEmptyGenres_ShouldThrowInvalidEntityStateException()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var emptyGenres = new List<Genres>();
+        var newActors = new List<Actors> { Actors.Create("New Actor") };
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidEntityStateException>(() => movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            emptyGenres,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        ));
+        Assert.Equal("A movie must have at least one genre.", ex.Message);
+    }
+
+    [Fact]
+    public void ChangeDetails_WithEmptyActors_ShouldThrowInvalidEntityStateException()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newGenres = new List<Genres> { Genres.Create("Action") };
+        var emptyActors = new List<Actors>();
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidEntityStateException>(() => movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            newGenres,
+            emptyActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        ));
+        Assert.Equal("A movie must have at least one actor.", ex.Message);
+    }
+
+    [Fact]
+    public void ChangeDetails_WithInvalidDuration_ShouldThrowInvalidEntityStateException()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newGenres = new List<Genres> { Genres.Create("Action") };
+        var newActors = new List<Actors> { Actors.Create("New Actor") };
+
+        // Act & Assert - Duration.Create validates and throws ArgumentOutOfRangeException for 0
+        Assert.Throws<ArgumentOutOfRangeException>(() => movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(0),
+            newGenres,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        ));
+    }
+
+    [Fact]
+    public void ChangeDetails_WithFutureReleaseYear_ShouldThrowInvalidEntityStateException()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newGenres = new List<Genres> { Genres.Create("Action") };
+        var newActors = new List<Actors> { Actors.Create("New Actor") };
+
+        // Act & Assert - ReleaseYear.Create validates and throws ArgumentOutOfRangeException for future year
+        Assert.Throws<ArgumentOutOfRangeException>(() => movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(DateTime.UtcNow.Year + 1),
+            Duration.Create(150),
+            newGenres,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        ));
+    }
+
+    [Fact]
+    public void ChangeDetails_WithNullGenresList_ShouldTreatAsEmpty()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newActors = new List<Actors> { Actors.Create("New Actor") };
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidEntityStateException>(() => movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            null!,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        ));
+        Assert.Equal("A movie must have at least one genre.", ex.Message);
+    }
+
+    [Fact]
+    public void ChangeDetails_WithNullActorsList_ShouldTreatAsEmpty()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newGenres = new List<Genres> { Genres.Create("Action") };
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidEntityStateException>(() => movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            newGenres,
+            null!,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        ));
+        Assert.Equal("A movie must have at least one actor.", ex.Message);
+    }
+
+    [Fact]
+    public void ChangeDetails_WithMultipleGenresAndActors_ShouldReplaceExisting()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+        var movie = Movie.Create(
+            "Original Title",
+            "Original Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/original.jpg")
+        );
+
+        var newGenres = new List<Genres>
+        {
+            Genres.Create("Action"),
+            Genres.Create("Thriller"),
+            Genres.Create("Drama"),
+            Genres.Create("Comedy")
+        };
+        var newActors = new List<Actors>
+        {
+            Actors.Create("Actor 1"),
+            Actors.Create("Actor 2"),
+            Actors.Create("Actor 3")
+        };
+
+        // Act
+        movie.ChangeDetails(
+            "Updated Title",
+            "Updated Description",
+            ReleaseYear.Create(2021),
+            Duration.Create(150),
+            newGenres,
+            newActors,
+            AgeRating.Create(16),
+            PosterUrl.Create("https://example.com/updated.jpg")
+        );
+
+        // Assert
+        Assert.Equal(4, movie.Genres.Count);
+        Assert.Equal(3, movie.Actors.Count);
+        // Verify that the new genres are exactly as provided
+        Assert.Equal(newGenres.Select(g => g.Value), movie.Genres.Select(g => g.Value));
+    }
 }
 

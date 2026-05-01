@@ -2,7 +2,6 @@ using Aornis;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Movies;
 using Howestprime.Movies.Domain.Movies.Repositorys;
-using Howestprime.Movies.Domain.Movies.ValueObjects;
 using Howestprime.Movies.Shared.Exceptions;
 
 namespace Howestprime.Movies.Application.Movies;
