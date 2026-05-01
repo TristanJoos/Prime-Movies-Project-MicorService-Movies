@@ -9,7 +9,7 @@ namespace Howestprime.Movies.Infrastructure.WebApi.Controllers.Movies;
 
 public record UpdateMovieRequest(
     [FromBody] UpdateMovieBody Body,
-    [FromServices] IUseCase<UpdateMovieInput, Guid> UseCase
+    [FromServices] IUseCase<ChangeMovieDetailsInput, Guid> UseCase
 );
 
 public static class UpdateMovieController
@@ -18,7 +18,8 @@ public static class UpdateMovieController
         [AsParameters] UpdateMovieRequest request
     )
     {
-        UpdateMovieInput input = new(
+        ChangeMovieDetailsInput input = new(
+            request.Body.MovieId,
             request.Body.Title,
             request.Body.Description,
             request.Body.Duration,
@@ -36,6 +37,7 @@ public static class UpdateMovieController
 }
 
 public record UpdateMovieBody(
+    [Required] Guid MovieId,
     [Required] string Title,
     [Required] string Description,
     [Required] int Duration,
