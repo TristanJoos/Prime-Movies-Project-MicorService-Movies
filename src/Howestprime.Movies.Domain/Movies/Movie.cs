@@ -31,10 +31,10 @@ public sealed class Movie : AggregateRoot<MovieId>
         AgeRating ageRating,
         PosterUrl posterUrl)
     {
-        
+
         Asserts.EnsureNotEmpty(title);
         Asserts.EnsureNotEmpty(description);
-        
+
         var genreList = genres?.ToList() ?? new List<Genres>();
         var actorList = actors?.ToList() ?? new List<Actors>();
 
@@ -54,7 +54,7 @@ public sealed class Movie : AggregateRoot<MovieId>
         );
 
         movie.RaiseDomainEvent(new MovieRegistered(
-            movie.Id, 
+            movie.Id,
             movie.Title,
             movie.Description,
             movie.ReleaseYear.Value,
@@ -85,7 +85,7 @@ public sealed class Movie : AggregateRoot<MovieId>
         _actors.AddRange(actors);
         AgeRating = ageRating;
         PosterUrl = posterUrl;
-        
+
         ValidateState();
     }
 
@@ -99,18 +99,18 @@ public sealed class Movie : AggregateRoot<MovieId>
         Asserts.EnsureNotEmpty(Title);
         Asserts.EnsureNotEmpty(Description);
 
-        
+
         if (Duration.Value <= 0)
             throw new InvalidEntityStateException("Duration must be a positive integer.");
 
-        
+
         if (ReleaseYear.Value > DateTime.UtcNow.Year)
             throw new InvalidEntityStateException("Release year must be the current year or earlier.");
 
-        if (!_genres.Any()) 
+        if (!_genres.Any())
             throw new InvalidEntityStateException("A movie must have at least one genre.");
-            
-        if (!_actors.Any()) 
+
+        if (!_actors.Any())
             throw new InvalidEntityStateException("A movie must have at least one actor.");
     }
 
@@ -118,5 +118,50 @@ public sealed class Movie : AggregateRoot<MovieId>
     {
         PosterUrl = newUrl ?? throw new ArgumentNullException(nameof(newUrl));
         ValidateState();
+    }
+
+
+    public void ChangeDetails(
+    string title,
+    string description,
+    ReleaseYear releaseYear,
+    Duration duration,
+    IEnumerable<Genres> genres,
+    IEnumerable<Actors> actors,
+    AgeRating ageRating,
+    PosterUrl posterUrl)
+    {
+        Asserts.EnsureNotEmpty(title);
+        Asserts.EnsureNotEmpty(description);
+        var genreList = genres?.ToList() ?? new List<Genres>();
+        var actorList = actors?.ToList() ?? new List<Actors>();
+        if (!genreList.Any()) throw new InvalidEntityStateException("A movie must have at least one genre.");
+        if (!actorList.Any()) throw new InvalidEntityStateException("A movie must have at least one actor.");
+
+        Title = title;
+        Description = description;
+        ReleaseYear = releaseYear;
+        Duration = duration;
+
+        _genres.Clear();
+        _genres.AddRange(genreList);
+
+        _actors.Clear();
+        _actors.AddRange(actorList);
+
+        AgeRating = ageRating;
+        PosterUrl = posterUrl;
+
+        ValidateState();
+
+        RaiseDomainEvent(new MovieDetailsChanged(
+            Id,
+            Title,
+            Description,
+            ReleaseYear.Value,
+            Duration.Value,
+            AgeRating.ToString(),
+            PosterUrl.Value
+        ));
     }
 }
