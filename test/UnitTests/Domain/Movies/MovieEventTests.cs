@@ -92,4 +92,41 @@ public class MovieEventTests
 
         Assert.Equal(newMovieId, movieEvent.MovieId);
     }
+
+    [Fact]
+    public void Book_ValidBooking_AddsBookingAndRaisesEvent()
+    {
+        var movieEvent = MovieEvent.Create(
+            _validMovieId,
+            _validRoomId,
+            _validShowtime,
+            10
+        );
+
+        var booking = Booking.Create(2, 0);
+
+        movieEvent.Book(booking, "Room 1");
+
+        Assert.Single(movieEvent.Bookings);
+        Assert.Equal(2, movieEvent.Visitors);
+        Assert.Equal(2, booking.SeatNumbers.Count);
+        Assert.Equal("Seat 1", booking.SeatNumbers[0]);
+        Assert.Equal("Seat 2", booking.SeatNumbers[1]);
+        Assert.NotEmpty(movieEvent.DomainEvents);
+    }
+
+    [Fact]
+    public void Book_ExceedsCapacity_ThrowsInvalidOperationException()
+    {
+        var movieEvent = MovieEvent.Create(
+            _validMovieId,
+            _validRoomId,
+            _validShowtime,
+            2
+        );
+
+        var booking = Booking.Create(3, 0);
+
+        Assert.Throws<InvalidOperationException>(() => movieEvent.Book(booking, "Room 1"));
+    }
 }
