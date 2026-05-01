@@ -57,6 +57,13 @@ public class ScheduleMovieEventTests
                 return Task.FromResult<MovieEvent?>(StubMovieEvent);
             return Task.FromResult<MovieEvent?>(null);
         }
+
+        public Task<MovieEvent?> GetById(Guid movieEventId)
+        {
+            if (StubMovieEvent != null && StubMovieEvent.Id.Value == movieEventId)
+                return Task.FromResult<MovieEvent?>(StubMovieEvent);
+            return Task.FromResult<MovieEvent?>(null);
+        }
     }
 
     [Fact]

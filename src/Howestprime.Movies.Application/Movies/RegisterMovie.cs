@@ -24,16 +24,16 @@ public sealed class RegisterMovie(
 
     public async Task<Guid> Execute(RegisterMovieInput input)
     {
-            var movie = Movie.Create(
-                input.Title,
-                input.Description,
-                ReleaseYear.Create(input.ReleaseYear),
-                Duration.Create(input.Duration),
-                input.Genres.Select(Genres.Create),
-                input.Actors.Select(Actors.Create),
-                AgeRating.Create(input.AgeRating),
-                PosterUrl.Create(input.PosterUrl)
-            );
+        var movie = Movie.Create(
+            input.Title,
+            input.Description,
+            ReleaseYear.Create(input.ReleaseYear),
+            Duration.Create(input.Duration),
+            input.Genres.Select(Genres.Create),
+            input.Actors.Select(Actors.Create),
+            AgeRating.Create(input.AgeRating),
+            PosterUrl.Create(input.PosterUrl)
+        );
 
         await uow.Save<IMovieRepository>(movie);
         await uow.Do();

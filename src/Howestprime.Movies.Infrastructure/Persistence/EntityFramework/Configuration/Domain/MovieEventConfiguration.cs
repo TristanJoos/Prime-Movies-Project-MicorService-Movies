@@ -17,6 +17,18 @@ public sealed class MovieEventConfiguration : IEntityTypeConfiguration<MovieEven
 
        builder.Property(movieEvent => movieEvent.Showtime).IsRequired();
        builder.Property(movieEvent => movieEvent.Capacity).IsRequired();
+
+       builder.Property(movieEvent => movieEvent.Visitors).IsRequired();
+       
+       builder.OwnsMany(me => me.Bookings, bookingBuilder =>
+        {
+            bookingBuilder.ToJson();
+            bookingBuilder.Property(b => b.Id);
+            bookingBuilder.Property(b => b.PaymentStatus);
+            bookingBuilder.Property(b => b.StandardVisitors);
+            bookingBuilder.Property(b => b.DiscountVisitors);
+            bookingBuilder.Property(b => b.SeatNumbers);
+        });
     }
 
 }
