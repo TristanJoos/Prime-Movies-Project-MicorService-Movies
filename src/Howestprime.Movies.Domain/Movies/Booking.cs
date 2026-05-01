@@ -66,7 +66,7 @@ public sealed class Booking : Entity<BookingId>
 
     public void MarkAsFailed()
     {
-        SeatNumbers.Clear();
+        SeatNumbers = new List<string>();
         PaymentStatus = PaymentStatus.failed;
     }
 }

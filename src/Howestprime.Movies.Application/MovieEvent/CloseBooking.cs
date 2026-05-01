@@ -7,8 +7,17 @@ public sealed record CloseBookingInput(Guid BookingId, string Reason);
 
 public sealed class CloseBooking(IUnitOfWork uow) : IUseCase<CloseBookingInput>
 {
-    public async Task Execute(CloseBookingInput input )
+    public async Task Execute(CloseBookingInput input)
     {
+        if (input.BookingId == Guid.Empty)
+        {
+            throw new ArgumentException("Booking ID cannot be empty.");
+        }
+
+        if (input.Reason is not ("PaymentSuccess" or "PaymentFailed"))
+        {
+            throw new ArgumentException("Close booking reason must be PaymentSuccess or PaymentFailed.");
+        }
 
         Optional<MovieEvent> movieEvent = await uow.Repo<IMovieEventRepository>().GetByBookingId(input.BookingId);
         if (!movieEvent.HasValue)

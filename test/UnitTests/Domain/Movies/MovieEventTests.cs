@@ -129,4 +129,72 @@ public class MovieEventTests
 
         Assert.Throws<InvalidOperationException>(() => movieEvent.Book(booking, "Room 1"));
     }
+
+    [Fact]
+    public void CloseBooking_WithPaymentSuccess_ClosesBookingAndMarksPaymentAsPaid()
+    {
+        var movieEvent = MovieEvent.Create(
+            _validMovieId,
+            _validRoomId,
+            _validShowtime,
+            10
+        );
+        var booking = Booking.Create(2, 0);
+        movieEvent.Book(booking, "Room 1");
+
+        movieEvent.CloseBooking(booking.Id.Value, "PaymentSuccess");
+
+        Assert.Equal(BookingStatus.closed, booking.BookingStatus);
+        Assert.Equal(PaymentStatus.success, booking.PaymentStatus);
+        Assert.Equal(2, movieEvent.Visitors);
+        Assert.Equal(["Seat 1", "Seat 2"], booking.SeatNumbers);
+    }
+
+    [Fact]
+    public void CloseBooking_WithPaymentFailed_ClosesBookingMarksPaymentAsFailedAndReleasesSeats()
+    {
+        var movieEvent = MovieEvent.Create(
+            _validMovieId,
+            _validRoomId,
+            _validShowtime,
+            10
+        );
+        var booking = Booking.Create(1, 1);
+        movieEvent.Book(booking, "Room 1");
+
+        movieEvent.CloseBooking(booking.Id.Value, "PaymentFailed");
+
+        Assert.Equal(BookingStatus.closed, booking.BookingStatus);
+        Assert.Equal(PaymentStatus.failed, booking.PaymentStatus);
+        Assert.Equal(0, movieEvent.Visitors);
+        Assert.Empty(booking.SeatNumbers);
+    }
+
+    [Fact]
+    public void CloseBooking_WithUnknownBooking_ThrowsArgumentException()
+    {
+        var movieEvent = MovieEvent.Create(
+            _validMovieId,
+            _validRoomId,
+            _validShowtime,
+            10
+        );
+
+        Assert.Throws<ArgumentException>(() => movieEvent.CloseBooking(Guid.NewGuid(), "PaymentSuccess"));
+    }
+
+    [Fact]
+    public void CloseBooking_WithInvalidReason_ThrowsArgumentException()
+    {
+        var movieEvent = MovieEvent.Create(
+            _validMovieId,
+            _validRoomId,
+            _validShowtime,
+            10
+        );
+        var booking = Booking.Create(1, 0);
+        movieEvent.Book(booking, "Room 1");
+
+        Assert.Throws<ArgumentException>(() => movieEvent.CloseBooking(booking.Id.Value, "Canceled"));
+    }
 }

@@ -70,9 +70,10 @@ public sealed class EntityTests
     {
         // Arrange
         TestEntity entity = new(new TestId(Guid.NewGuid()));
+        object? other = null;
 
         // Act
-        bool equals = entity.Equals(null);
+        bool equals = entity.Equals(other);
 
         // Assert
         Assert.False(equals);

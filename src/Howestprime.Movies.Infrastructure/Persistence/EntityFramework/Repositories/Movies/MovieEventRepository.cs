@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Howestprime.Movies.Domain.Movies;
 using Howestprime.Movies.Domain.Movies.Repositorys;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Configuration;
+using Aornis;
 
 namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Repositories;
 
-public sealed class MovieEventRepository (
+public sealed class MovieEventRepository(
     DomainDbContext context
 ) : EfCoreGenericRepository<MovieEvent, MovieEventId>(context), IMovieEventRepository
 {
@@ -17,10 +18,11 @@ public sealed class MovieEventRepository (
     }
 
 
-    public Task<MovieEvent?> GetByBookingId(Guid bookingId)
+    public async Task<MovieEvent?> GetByBookingId(Guid bookingId)
     {
-            return _context.Set<MovieEvent>()
-                .Include(e => e.Bookings)
-                .FirstOrDefaultAsync(e => e.Bookings.Any(b => b.Id.Value == bookingId));
+        var id = new BookingId(bookingId);
+        return await _context.MovieEvents
+            .Include(e => e.Bookings)
+            .FirstOrDefaultAsync(e => e.Bookings.Any(b => b.Id == id));
     }
 }

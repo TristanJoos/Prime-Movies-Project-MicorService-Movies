@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Howestprime.Movies.Domain.Shared.DomainEvents;
 using Howestprime.Movies.Infrastructure.Messaging.IntegrationEvents.Shared.Contracts;
 using Howestprime.Movies.Infrastructure.Messaging.IntegrationEvents.Shared.Messages;
+using Howestprime.Movies.Infrastructure.Messaging.IntegrationEvents.Controllers;
 
 namespace Howestprime.Movies.Infrastructure.Messaging.IntegrationEvents.Shared.Extensions;
 
@@ -15,8 +16,10 @@ public static class AmqpServices
     )
     {
 
-        services.AddScoped<WhenPaymentFailedCloseBookingController>();
-        services.AddScoped<WhenPaymentSuccessCloseBookingController>();
+        services.AddKeyedScoped<IController<ConsumerContext>, WhenPaymentFailedCloseBooking>(
+            nameof(WhenPaymentFailedCloseBooking));
+        services.AddKeyedScoped<IController<ConsumerContext>, WhenPaymentSuccessCloseBooking>(
+            nameof(WhenPaymentSuccessCloseBooking));
 
         return services
             .AddAmqpBrokerConfigurator(configuration)

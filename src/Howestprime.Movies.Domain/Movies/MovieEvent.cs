@@ -1,7 +1,5 @@
 using Howestprime.Movies.Domain.Movies.Events;
 using Howestprime.Movies.Domain.Shared;
-using Microsoft.VisualBasic;
-
 namespace Howestprime.Movies.Domain.Movies;
 
 public readonly record struct MovieEventId(Guid Value) : IEntityId;
@@ -120,20 +118,20 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
     {
         var booking = Bookings.FirstOrDefault(b => b.Id.Value == bookingId);
         if (booking == null) throw new ArgumentException("Booking not found.");
-
         booking.Close();
 
         if (reason == "PaymentFailed")
         {
             Visitors -= booking.StandardVisitors + booking.DiscountVisitors;
-
-        
             booking.MarkAsFailed();
-
         }
         else if (reason == "PaymentSuccess")
         {
             booking.MarkAsPaid();
+        }
+        else
+        {
+            throw new ArgumentException("Close booking reason must be PaymentSuccess or PaymentFailed.");
         }
     }
 }
