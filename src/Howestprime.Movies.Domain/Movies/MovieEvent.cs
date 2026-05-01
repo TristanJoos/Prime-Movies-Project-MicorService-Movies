@@ -121,7 +121,6 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
         var booking = Bookings.FirstOrDefault(b => b.Id.Value == bookingId);
         if (booking == null) throw new ArgumentException("Booking not found.");
 
-        // Update status to Closed (assuming you have a Status property on Booking)
         booking.Close();
 
         if (reason == "PaymentFailed")

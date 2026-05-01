@@ -14,6 +14,10 @@ public static class AmqpServices
         IConfiguration configuration
     )
     {
+
+        services.AddScoped<WhenPaymentFailedCloseBookingController>();
+        services.AddScoped<WhenPaymentSuccessCloseBookingController>();
+
         return services
             .AddAmqpBrokerConfigurator(configuration)
             .AddAmqpBroker();
