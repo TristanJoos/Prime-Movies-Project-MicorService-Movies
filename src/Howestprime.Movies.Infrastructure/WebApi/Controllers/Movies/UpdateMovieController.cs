@@ -8,18 +8,19 @@ using System.ComponentModel.DataAnnotations;
 namespace Howestprime.Movies.Infrastructure.WebApi.Controllers.Movies;
 
 public record UpdateMovieRequest(
+    [FromRoute] Guid Id,
     [FromBody] UpdateMovieBody Body,
-    [FromServices] IUseCase<ChangeMovieDetailsInput, Guid> UseCase
+    [FromServices] IUseCase<ChangeMovieDetailsInput> UseCase
 );
 
 public static class UpdateMovieController
 {
-    public static async Task<Results<Created, BadRequest>> Invoke(
+    public static async Task<Results<NoContent, BadRequest>> Invoke(
         [AsParameters] UpdateMovieRequest request
     )
     {
         ChangeMovieDetailsInput input = new(
-            request.Body.MovieId,
+            request.Id,
             request.Body.Title,
             request.Body.Description,
             request.Body.Duration,
@@ -30,14 +31,12 @@ public static class UpdateMovieController
             request.Body.PosterUrl
         );
 
-        Guid movieId = await request.UseCase.Execute(input);
-        
-        return TypedResults.Created($"/api/movie-catalog/{movieId}");
+        await request.UseCase.Execute(input);
+        return TypedResults.NoContent();
     }
 }
 
 public record UpdateMovieBody(
-    [Required] Guid MovieId,
     [Required] string Title,
     [Required] string Description,
     [Required] int Duration,

@@ -26,7 +26,7 @@ public sealed class ChangeMovieDetails(
 
     public async Task Execute(ChangeMovieDetailsInput input)
     {
-       MovieId movieId = new(input.MovieId);
+        MovieId movieId = new(input.MovieId);
         Optional<Movie> optionalMovie = await uow.Repo<IMovieRepository>().ById(movieId);
 
         if (!optionalMovie.HasValue)
@@ -55,6 +55,6 @@ public sealed class ChangeMovieDetails(
         );
 
         await uow.Save<IMovieRepository>(movie);
-        await uow.Do(); 
+        await uow.Do();
     }
 }
