@@ -1,5 +1,6 @@
 using Howestprime.Movies.Domain.Movies.Events;
 using Howestprime.Movies.Domain.Shared;
+using Microsoft.VisualBasic;
 
 namespace Howestprime.Movies.Domain.Movies;
 
@@ -81,15 +82,30 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
     public void Book(Booking booking, string RoomName)
     {
         Asserts.EnsureNotEmpty(booking);
-        int totalVisitors = Visitors + booking.StandardVisitors + booking.DiscountVisitors;
-        if (totalVisitors > Capacity)
+
+        int newVisitorsCount = booking.StandardVisitors + booking.DiscountVisitors;
+        int totalVisitorsAfterBooking = Visitors + newVisitorsCount;
+
+        if (totalVisitorsAfterBooking > Capacity)
         {
             throw new InvalidOperationException("Cannot book more visitors than the capacity of the movie event.");
         }
-        Bookings.Add(booking);
-        Visitors = totalVisitors;
 
-        this.RaiseDomainEvent(new BookingOpened(
+        List<string> assignedSeats = new();
+        for (int i = 1; i <= newVisitorsCount; i++)
+        {
+            
+            assignedSeats.Add($"Seat {Visitors + i}");
+        }
+
+       
+        booking.AddSeatNumbers(assignedSeats);
+
+       
+        Bookings.Add(booking);
+        Visitors = totalVisitorsAfterBooking;
+
+        RaiseDomainEvent(new BookingOpened(
             booking.Id,
             MovieId,
             RoomName,

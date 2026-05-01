@@ -40,4 +40,17 @@ public sealed class Booking : Entity<BookingId>
     {
         throw new NotImplementedException();
     }
+
+    public void AddSeatNumbers(IEnumerable<string> seatNumbers)
+    {
+        if (seatNumbers == null) throw new ArgumentNullException(nameof(seatNumbers));
+        foreach (var seatNumber in seatNumbers)
+        {
+            if (string.IsNullOrWhiteSpace(seatNumber))
+            {
+                throw new ArgumentException("Seat numbers cannot be null or whitespace.");
+            }
+            SeatNumbers.Add(seatNumber);
+        }
+    }
 }
