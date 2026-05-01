@@ -8,21 +8,22 @@ namespace Howestprime.Movies.Main.Modules.Application;
 public static class ApplicationModule
 {
     public static IServiceCollection AddApplicationModule(
-        this IServiceCollection services, 
+        this IServiceCollection services,
         IConfiguration _configuration
     )
     {
         // Register command use cases
         services.AddScoped<IUseCase<RegisterMovieInput, Guid>, RegisterMovie>();
         services.AddScoped<IUseCase<ChangeMovieDetailsInput>, ChangeMovieDetails>();
-        services.AddScoped<IUseCase<ScheduleMovieEventInput , Guid>, ScheduleMovieEvent>();
+        services.AddScoped<IUseCase<ScheduleMovieEventInput, Guid>, ScheduleMovieEvent>();
         services.AddScoped<IUseCase<BookMovieEventInput, Guid>, BookMovieEvent>();
+        services.AddScoped<IUseCase<CloseBookingInput>, CloseBooking>();
         // Register query use cases
         services.AddScoped<IUseCase<SearchMovieCatalogInput, IReadOnlyList<MovieData>>, SearchMovieCatalog>();
         services.AddScoped<IUseCase<FindMovieByIdInput, MovieData>, FindMovieById>();
         services.AddScoped<IUseCase<GetHowestprimeScheduleInput, IReadOnlyList<MovieEventData>>, SearchMovieEventsInTimeRange>();
         // Register Policies (example of automatic registration with reflection at boot time)
-        
+
         services.RegisterPolicies();
 
         return services;

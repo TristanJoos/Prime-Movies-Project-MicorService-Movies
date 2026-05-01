@@ -1,0 +1,1 @@
+public record PaymentSuccess(Guid BookingId);

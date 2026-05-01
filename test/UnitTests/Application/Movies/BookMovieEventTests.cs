@@ -49,6 +49,7 @@ public class BookMovieEventTests
 
         public Task<MovieEvent?> ByShowtimeAndRoomId(DateTime showtime, Guid roomId) => Task.FromResult<MovieEvent?>(null);
         public Task<MovieEvent?> GetById(Guid movieEventId) => Task.FromResult<MovieEvent?>(null);
+        public Task<MovieEvent?> GetByBookingId(Guid bookingId) => Task.FromResult<MovieEvent?>(null);
     }
 
     [Fact]

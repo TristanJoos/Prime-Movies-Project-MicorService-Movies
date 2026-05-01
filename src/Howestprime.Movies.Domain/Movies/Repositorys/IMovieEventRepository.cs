@@ -7,5 +7,5 @@ public interface IMovieEventRepository : IRepository<MovieEvent, MovieEventId>
 {
     Task<MovieEvent?> ByShowtimeAndRoomId(DateTime showtime, Guid roomId);
 
-    Task <MovieEvent?> GetById(Guid movieEventId);
+    Task <MovieEvent?> GetByBookingId(Guid bookingId);
 }

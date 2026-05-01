@@ -64,6 +64,8 @@ public class ScheduleMovieEventTests
                 return Task.FromResult<MovieEvent?>(StubMovieEvent);
             return Task.FromResult<MovieEvent?>(null);
         }
+
+        public Task<MovieEvent?> GetByBookingId(Guid bookingId) => Task.FromResult<MovieEvent?>(null);
     }
 
     [Fact]

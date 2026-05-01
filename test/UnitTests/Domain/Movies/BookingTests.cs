@@ -71,4 +71,36 @@ public class BookingTests
         var booking = Booking.Create(1, 0);
         Assert.Throws<NotImplementedException>(() => booking.ValidateState());
     }
+
+    [Fact]
+    public void Close_SetsBookingStatusToClosed()
+    {
+        var booking = Booking.Create(1, 0);
+
+        booking.Close();
+
+        Assert.Equal(BookingStatus.closed, booking.BookingStatus);
+    }
+
+    [Fact]
+    public void MarkAsPaid_SetsPaymentStatusToSuccess()
+    {
+        var booking = Booking.Create(1, 0);
+
+        booking.MarkAsPaid();
+
+        Assert.Equal(PaymentStatus.success, booking.PaymentStatus);
+    }
+
+    [Fact]
+    public void MarkAsFailed_ClearsSeatsAndSetsPaymentStatusToFailed()
+    {
+        var booking = Booking.Create(2, 0);
+        booking.AddSeatNumbers(["Seat 1", "Seat 2"]);
+
+        booking.MarkAsFailed();
+
+        Assert.Equal(PaymentStatus.failed, booking.PaymentStatus);
+        Assert.Empty(booking.SeatNumbers);
+    }
 }

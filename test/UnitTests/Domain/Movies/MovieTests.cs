@@ -190,6 +190,44 @@ public sealed class MovieTests
     }
 
     [Fact]
+    public void Create_WithNullGenres_ShouldThrowInvalidEntityStateException()
+    {
+        // Arrange
+        var actors = new List<Actors> { Actors.Create("Actor 1") };
+
+        // Act & Assert
+        Assert.Throws<InvalidEntityStateException>(() => Movie.Create(
+            "Valid Title",
+            "Valid Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            null!,
+            actors,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/poster.jpg")
+        ));
+    }
+
+    [Fact]
+    public void Create_WithNullActors_ShouldThrowInvalidEntityStateException()
+    {
+        // Arrange
+        var genres = new List<Genres> { Genres.Create("Action") };
+
+        // Act & Assert
+        Assert.Throws<InvalidEntityStateException>(() => Movie.Create(
+            "Valid Title",
+            "Valid Description",
+            ReleaseYear.Create(2020),
+            Duration.Create(120),
+            genres,
+            null!,
+            AgeRating.Create(13),
+            PosterUrl.Create("https://example.com/poster.jpg")
+        ));
+    }
+
+    [Fact]
     public void Create_WithInvalidDuration_ShouldThrowArgumentOutOfRangeException()
     {
         // Arrange
