@@ -53,4 +53,20 @@ public sealed class Booking : Entity<BookingId>
             SeatNumbers.Add(seatNumber);
         }
     }
+
+    public void Close()
+    {
+        BookingStatus = BookingStatus.closed;
+    }
+
+    public void MarkAsPaid()
+    {
+        PaymentStatus = PaymentStatus.success;
+    }
+
+    public void MarkAsFailed()
+    {
+        SeatNumbers.Clear();
+        PaymentStatus = PaymentStatus.failed;
+    }
 }
