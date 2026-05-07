@@ -23,6 +23,9 @@ public sealed class ScheduleMovieEvent(
 
         MovieId movieId = new(input.MovieId);
         RoomId roomId = new(input.RoomId);
+        DateTime utcValue = input.Showtime.Kind == DateTimeKind.Unspecified
+            ? DateTime.SpecifyKind(input.Showtime, DateTimeKind.Utc)
+            : input.Showtime.ToUniversalTime();
 
         var roomOptional = await uow.Repo<IRoomRepository>().ById(roomId);
 
@@ -38,7 +41,7 @@ public sealed class ScheduleMovieEvent(
         }
 
         IMovieEventRepository repo = uow.Repo<IMovieEventRepository>();
-        MovieEvent? existingEvent = await repo.ByShowtimeAndRoomId(input.Showtime, input.RoomId);
+        MovieEvent? existingEvent = await repo.ByShowtimeAndRoomId(utcValue, input.RoomId);
         if (existingEvent != null)
         {
             existingEvent.UpdateMovie((movieId));
@@ -46,7 +49,7 @@ public sealed class ScheduleMovieEvent(
             return existingEvent.Id.Value;
         }
 
-        var movieEvent = MovieEvent.Create(movieId, roomId, input.Showtime, room.Capacity);
+        var movieEvent = MovieEvent.Create(movieId, roomId, utcValue, room.Capacity);
         await uow.Save<IMovieEventRepository>(movieEvent);
         await uow.Do();
 
