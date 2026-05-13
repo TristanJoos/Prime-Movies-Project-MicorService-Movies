@@ -6,6 +6,8 @@ public sealed class MovieDetailsChanged(
     string description,
     int releaseYear,
     int duration,
+    IEnumerable<string> genres,
+    IEnumerable<string> actors,
     string ageRating,
     string posterUrl
 ) : MovieDomainEvent(nameof(MovieDetailsChanged))
@@ -15,6 +17,8 @@ public sealed class MovieDetailsChanged(
     public string Description { get; } = description;
     public int ReleaseYear { get; } = releaseYear;
     public int Duration { get; } = duration;
+    public IEnumerable<string> Genres { get; } = genres;
+    public IEnumerable<string> Actors { get; } = actors;
     public string AgeRating { get; } = ageRating;
     public string PosterUrl { get; } = posterUrl;
 }
