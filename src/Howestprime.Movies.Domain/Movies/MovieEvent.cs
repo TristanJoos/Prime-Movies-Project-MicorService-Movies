@@ -93,7 +93,7 @@ public sealed class MovieEvent : AggregateRoot<MovieEventId>
         for (int i = 1; i <= newVisitorsCount; i++)
         {
 
-            assignedSeats.Add($"Seat {Visitors + i}");
+            assignedSeats.Add($"{Visitors + i}");
         }
 
 

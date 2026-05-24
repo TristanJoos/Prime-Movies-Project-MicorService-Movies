@@ -59,9 +59,9 @@ public sealed class Movie : AggregateRoot<MovieId>
             movie.Description,
             movie.ReleaseYear.Value,
             movie.Duration.Value,
-            movie.Genres.Select(g => g.ToString()),
-            movie.Actors.Select(a => a.ToString()),
-            movie.AgeRating.ToString(),
+            movie.Genres.Select(g => g.Value).ToList(),
+            movie.Actors.Select(a => a.Value).ToList(),
+            movie.AgeRating.Value.ToString(),
             movie.PosterUrl.Value
         ));
 
@@ -162,9 +162,9 @@ public sealed class Movie : AggregateRoot<MovieId>
             Description,
             ReleaseYear.Value,
             Duration.Value,
-            Genres.Select(g => g.ToString()),
-            Actors.Select(a => a.ToString()),
-            AgeRating.ToString(),
+            Genres.Select(g => g.Value).ToList(),
+            Actors.Select(a => a.Value).ToList(),
+            AgeRating.Value.ToString(),
             PosterUrl.Value
         ));
     }
