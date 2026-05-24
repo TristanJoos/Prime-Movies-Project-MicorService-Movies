@@ -98,7 +98,7 @@ public sealed class MovieTests
                  created.Description == description &&
                  created.ReleaseYear == releaseYear &&
                  created.Duration == duration &&
-                 created.AgeRating == AgeRating.Create(ageRating).ToString() &&
+                 created.AgeRating == ageRating.ToString() &&
                  created.PosterUrl == posterUrl
         );
     }

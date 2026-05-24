@@ -110,8 +110,8 @@ public class MovieEventTests
         Assert.Single(movieEvent.Bookings);
         Assert.Equal(2, movieEvent.Visitors);
         Assert.Equal(2, booking.SeatNumbers.Count);
-        Assert.Equal("Seat 1", booking.SeatNumbers[0]);
-        Assert.Equal("Seat 2", booking.SeatNumbers[1]);
+        Assert.Equal("1", booking.SeatNumbers[0]);
+        Assert.Equal("2", booking.SeatNumbers[1]);
         Assert.NotEmpty(movieEvent.DomainEvents);
     }
 
@@ -147,7 +147,7 @@ public class MovieEventTests
         Assert.Equal(BookingStatus.closed, booking.BookingStatus);
         Assert.Equal(PaymentStatus.success, booking.PaymentStatus);
         Assert.Equal(2, movieEvent.Visitors);
-        Assert.Equal(["Seat 1", "Seat 2"], booking.SeatNumbers);
+        Assert.Equal(["1", "2"], booking.SeatNumbers);
     }
 
     [Fact]
