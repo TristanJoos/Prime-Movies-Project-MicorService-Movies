@@ -101,11 +101,11 @@ jobs:
           --registry-server ${{ vars.az_container_registry }} \
           --registry-username ${{ secrets.howestprime_wide_ci_service_principal }} \
           --registry-password ${{ secrets.howestprime_wide_ci_service_principal_password }} \
-          --user-assigned "${{ vars.howestprime_wide_mi_keyvaultreader_uri}}" \
+          --user-assigned "${{ vars.howestprime_wide_mi_keyvaultreader_id }}" \
           \
           --secrets \
-          "db-password=keyvaultref:${{vars.howestprime_movies_p_sqlsrv_password_uri}},identityref:${{vars.howestprime_wide_mi_keyvaultreader_uri}}" \
-          "mb-password=keyvaultref:${{vars.howestprime_wide_p_messagebroker_password_uri}},identityref:${{vars.howestprime_wide_mi_keyvaultreader_uri}}" \
+          "db-password=keyvaultref:${{vars.howestprime_movies_p_psql_password_uri}},identityref:${{vars.howestprime_wide_mi_keyvaultreader_id}}" \
+          "mb-password=keyvaultref:${{vars.howestprime_wide_p_messagebroker_password_uri}},identityref:${{vars.howestprime_wide_mi_keyvaultreader_id}}" \
           \
           --env-vars \
           ASPNETCORE_ENVIRONMENT=Production \
