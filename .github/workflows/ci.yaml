@@ -29,7 +29,6 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-    # Let op: we kunnen deze job afhankelijk maken van unit-tests
     needs: [unit-tests]
     
     steps:
@@ -62,7 +61,7 @@ jobs:
   build:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    needs: [coverage] # Wacht met bouwen tot de coverage check is geslaagd!
+    needs: [coverage]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -84,13 +83,12 @@ jobs:
   deploy:
     name: Deploy to Azure Container Apps
     runs-on: ubuntu-latest
-    needs: [build] # Wacht met deployen tot de container succesvol in de registry staat!
+    needs: [build] 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Log in to Azure
-        # Let op: zorg dat <YOUR_AZURE_TENANT_ID> is vervangen door je echte Tenant ID, of gebruik een GitHub variabele zoals ${{ vars.AZ_TENANT_ID }}
         run: az login --service-principal -u ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL }} -p ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL_PASSWORD }} --tenant ${{ vars.AZ_TENANT_ID }}
 
       - name: Deploy to Azure Container Apps
