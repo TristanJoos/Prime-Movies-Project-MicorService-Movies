@@ -70,7 +70,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to Azure Container Registry
-        run: echo ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL_PASSWORD }} | docker login ${{ vars.AZ_CONTAINER_REGISTRY }} -u ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL }} --password-stdin
+        run: echo ${{ secrets.howestprime_wide_ci_service_principal_password }} | docker login ${{ vars.az_container_registry }} -u ${{ secrets.howestprime_wide_ci_service_principal }} --password-stdin
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
@@ -78,47 +78,47 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Publish .NET app
-        run: dotnet publish -c Release -p:PublishProfile=production -p:ContainerRegistry=${{ vars.AZ_CONTAINER_REGISTRY }} -p:ContainerImageTag=1.0.0 /t:PublishContainer
+        run: dotnet publish -c Release -p:PublishProfile=production -p:ContainerRegistry=${{ vars.az_container_registry }} -p:ContainerImageTag=1.0.0 /t:PublishContainer
 
   deploy:
     name: Deploy to Azure Container Apps
     runs-on: ubuntu-latest
-    needs: [build] 
+    needs: [build]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Log in to Azure
-        run: az login --service-principal -u ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL }} -p ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL_PASSWORD }} --tenant ${{ vars.AZ_TENANT_ID }}
+        run: az login --service-principal -u ${{ secrets.howestprime_wide_ci_service_principal }} -p ${{ secrets.howestprime_wide_ci_service_principal_password }} --tenant ${{ vars.az_tenant_id }}
 
       - name: Deploy to Azure Container Apps
         run: |
           az containerapp create \
           --name microservice-movies \
-          --resource-group ${{ vars.AZ_RESOURCE_GROUP }} \
-          --environment ${{ vars.AZ_CONTAINER_ENVIRONMENT }} \
-          --image ${{ vars.AZ_CONTAINER_REGISTRY }}/microservice-movies:1.0.0 \
-          --registry-server ${{ vars.AZ_CONTAINER_REGISTRY }} \
-          --registry-username ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL }} \
-          --registry-password ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL_PASSWORD }} \
-          --user-assigned "${{ vars.HOWESTPRIME_WIDE_MI_KEYVAULTREADER_URI}}" \
+          --resource-group ${{ vars.az_resource_group }} \
+          --environment ${{ vars.az_container_environment }} \
+          --image ${{ vars.az_container_registry }}/microservice-movies:1.0.0 \
+          --registry-server ${{ vars.az_container_registry }} \
+          --registry-username ${{ secrets.howestprime_wide_ci_service_principal }} \
+          --registry-password ${{ secrets.howestprime_wide_ci_service_principal_password }} \
+          --user-assigned "${{ vars.howestprime_wide_mi_keyvaultreader_uri}}" \
           \
           --secrets \
-          "db-password=keyvaultref:${{vars.HOWESTPRIME_MOVIES_P_SQLSRV_PASSWORD_URI}},identityref:${{vars.HOWESTPRIME_WIDE_MI_KEYVAULTREADER_URI}}" \
-          "mb-password=keyvaultref:${{vars.HOWESTPRIME_WIDE_P_MESSAGEBROKER_PASSWORD_URI}},identityref:${{vars.HOWESTPRIME_WIDE_MI_KEYVAULTREADER_URI}}" \
+          "db-password=keyvaultref:${{vars.howestprime_movies_p_sqlsrv_password_uri}},identityref:${{vars.howestprime_wide_mi_keyvaultreader_uri}}" \
+          "mb-password=keyvaultref:${{vars.howestprime_wide_p_messagebroker_password_uri}},identityref:${{vars.howestprime_wide_mi_keyvaultreader_uri}}" \
           \
           --env-vars \
           ASPNETCORE_ENVIRONMENT=Production \
           "Database__Password=secretref:db-password" \
-          "Database__Username=${{vars.HOWESTPRIME_MOVIES_P_PSQL_LOGIN}}" \
-          "Database__ConnectionString=${{vars.HOWESTPRIME_MOVIES_P_PSQL_CONNECTION_STRING}}" \
-          "MessageBroker__Hostname=${{vars.HOWESTPRIME_WIDE_P_MESSAGEBROKER_HOSTNAME}}" \
-          "MessageBroker__VirtualHost=${{vars.HOWESTPRIME_WIDE_P_MESSAGEBROKER_VHOST}}" \
+          "Database__Username=${{vars.howestprime_movies_p_psql_login}}" \
+          "Database__ConnectionString=${{vars.howestprime_movies_p_psql_connection_string}}" \
+          "MessageBroker__Hostname=${{vars.howestprime_wide_p_messagebroker_hostname}}" \
+          "MessageBroker__VirtualHost=${{vars.howestprime_wide_p_messagebroker_vhost}}" \
           "MessageBroker__Password=secretref:mb-password" \
-          "MessageBroker__Username=${{vars.HOWESTPRIME_WIDE_P_MESSAGEBROKER_LOGIN}}" 
+          "MessageBroker__Username=${{vars.howestprime_wide_p_messagebroker_login}}" 
           
           az containerapp ingress enable \
           --name microservice-movies \
-          --resource-group ${{ vars.AZ_RESOURCE_GROUP }} \
+          --resource-group ${{ vars.az_resource_group }} \
           --type external \
           --target-port 8000
