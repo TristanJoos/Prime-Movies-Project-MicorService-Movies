@@ -134,7 +134,7 @@ Prime-Movies-Project-MicorService-Movies/
 
 ## 🔗 Links
 
-- [Repository Tickets](#https://github.com/TristanJoos/Prime-Movies-Project-MicorService-Tickets)
+- [Repository Tickets](#https://github.com/TristanJoos/Prime-Movies-Project-MicorService-Tickets) , [Repository BackOffice](#https://github.com/TristanJoos/Prime-Movies-Project-MicorService-BackOffice/tree/main)
 - [ Demonstration of full Project](#https://youtu.be/Asxe2ByRsLA)
 
 ---
